@@ -17,11 +17,13 @@ import MapExplorer from './mapexplorer';
 import TimeSeries from './timeseries';
 import Minigraph from './minigraph';
 import SlangInterface from '../voice/slang';
+import Patients from './patients';
 
 function Home(props) {
   const [states, setStates] = useState([]);
   const [stateDistrictWiseData, setStateDistrictWiseData] = useState({});
   const [stateTestData, setStateTestData] = useState({});
+  const [patients, setPatients] = useState([]);
   const [fetched, setFetched] = useState(false);
   const [graphOption, setGraphOption] = useState(1);
   const [lastUpdated, setLastUpdated] = useState('');
@@ -91,32 +93,31 @@ function Home(props) {
   return (
     <React.Fragment>
       <div className="Home">
-        <div className="home-left">
-          <div className="header fadeInUp" style={{animationDelay: '1s'}}>
-            <div className="header-mid">
-              <div className="titles">
-                <h1>India COVID-19 Tracker</h1>
-                <h6 style={{fontWeight: 600}}>A Crowdsourced Initiative</h6>
-              </div>
-              <div className="last-update">
-                <h6>Last Updated</h6>
-                <h6 style={{color: '#28a745', fontWeight: 600}}>
-                  {isNaN(Date.parse(formatDate(lastUpdated)))
-                    ? ''
-                    : formatDistance(
-                        new Date(formatDate(lastUpdated)),
-                        new Date()
-                      ) + ' Ago'}
-                </h6>
-                <h6 style={{color: '#28a745', fontWeight: 600}}>
-                  {isNaN(Date.parse(formatDate(lastUpdated)))
-                    ? ''
-                    : formatDateAbsolute(lastUpdated)}
-                </h6>
-              </div>
+        <div className="header fadeInUp" style={{animationDelay: '1s'}}>
+          <div className="header-mid">
+            <div className="titles">
+              <h1>India COVID-19 Tracker</h1>
+              <h6 style={{fontWeight: 600}}>A Crowdsourced Initiative</h6>
+            </div>
+            <div className="last-update">
+              <h6>Last Updated</h6>
+              <h6 style={{color: '#28a745', fontWeight: 600}}>
+                {isNaN(Date.parse(formatDate(lastUpdated)))
+                  ? ''
+                  : formatDistance(
+                      new Date(formatDate(lastUpdated)),
+                      new Date()
+                    ) + ' Ago'}
+              </h6>
+              <h6 style={{color: '#28a745', fontWeight: 600}}>
+                {isNaN(Date.parse(formatDate(lastUpdated)))
+                  ? ''
+                  : formatDateAbsolute(lastUpdated)}
+              </h6>
             </div>
           </div>
-
+        </div>
+        <div className="home-left">
           {states.length > 1 && <Level data={states} />}
           {fetched && <Minigraph timeseries={timeseries['TT']} />}
           {fetched && (
@@ -128,6 +129,22 @@ function Home(props) {
               onHighlightState={onHighlightState}
               onHighlightDistrict={onHighlightDistrict}
             />
+          )}
+
+          {patients.length > 1 && (
+            <div className="patients-summary">
+              <h1>Latest Cases</h1>
+              <h6>A summary of the latest reported cases</h6>
+              <div className="patients-wrapper">
+                <Patients patients={patients} summary={true} />
+              </div>
+              <button className="button">
+                <Link to="/patients">
+                  <Icon.Database />
+                  <span>View the Patients Database</span>
+                </Link>
+              </button>
+            </div>
           )}
         </div>
 

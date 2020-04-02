@@ -22,6 +22,7 @@ function PatientDB(props) {
   const [filteredPatients, setFilteredPatients] = useState([]);
   const [error, setError] = useState('');
   const {pathname} = useLocation();
+<<<<<<< HEAD
   const [colorMode, setColorMode] = useState('genders');
   const [scaleMode, setScaleMode] = useState(false);
   const [filters, setFilters] = useState({
@@ -30,6 +31,8 @@ function PatientDB(props) {
     detectedcity: '',
     dateannounced: format(subDays(new Date(), 1), 'dd/MM/yyyy'),
   });
+=======
+>>>>>>> Added latest cases on frontpage.
 
   useEffect(() => {
     window.scrollTo(0, 0);
