@@ -33,7 +33,7 @@ function App() {
       view: PatientDB,
       displayName: 'Demographics',
       animationDelayForNavbar: 0.3,
-    },
+    },*/
     {
       pageLink: '/deepdive',
       view: DeepDive,

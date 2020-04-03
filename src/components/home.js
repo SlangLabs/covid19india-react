@@ -147,7 +147,6 @@ function Home(props) {
             </div>
           )}
         </div>
-
         <div className="home-right">
           {fetched && (
             <React.Fragment>
@@ -253,7 +252,6 @@ function Home(props) {
             </React.Fragment>
           )}
         </div>
-
         {/* <div className="floating-buttons">
           <button
             className="table-nav fadeInUp"
@@ -277,7 +275,6 @@ function Home(props) {
             <Icon.TrendingUp />
           </button>
         </div> */}
-
         {/* <div className="home-left">
         {patients.length > 1 && (
           <div className="patients-summary">
@@ -323,8 +320,8 @@ function Home(props) {
           </React.Fragment>
         )}
       </div>
-      <div className="home-right"></div>
     */}
+        <div className="home-right"></div>
       </div>
 
       <div className="Home">
