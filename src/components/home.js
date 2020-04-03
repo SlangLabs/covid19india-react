@@ -165,12 +165,17 @@ function Home(props) {
               mode={timeseriesMode}
               logMode={timeseriesLogMode}
             />
+<<<<<<< HEAD
             <SlangInterface
               states={states}
               onHighlightState={onHighlightState}
               stateDistrictWiseData={stateDistrictWiseData}
               onHighlightDistrict={onHighlightDistrict}
             />
+=======
+
+            {/* Testing Rebuild*/}
+>>>>>>> Testing rebuild.
           </React.Fragment>
         )}
       </div>
