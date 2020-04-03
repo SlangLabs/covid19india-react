@@ -297,6 +297,12 @@ function Home(props) {
               mode={timeseriesMode}
               logMode={timeseriesLogMode}
             />
+            <SlangInterface
+              states={states}
+              onHighlightState={onHighlightState}
+              stateDistrictWiseData={stateDistrictWiseData}
+              onHighlightDistrict={onHighlightDistrict}
+            />
           </React.Fragment>
         )}
       </div>
