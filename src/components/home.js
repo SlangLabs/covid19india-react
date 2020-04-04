@@ -16,6 +16,7 @@ import Level from './level';
 import MapExplorer from './mapexplorer';
 import TimeSeries from './timeseries';
 import Minigraph from './minigraph';
+/* import Patients from './patients';*/
 import SlangInterface from '../voice/slang';
 import Patients from './patients';
 
