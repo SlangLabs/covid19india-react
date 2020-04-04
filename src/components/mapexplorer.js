@@ -404,9 +404,15 @@ function MapExplorer({
         </h6>
       </div>
 
+<<<<<<< HEAD
       <div className="map-stats">
         <div className="stats fadeInUp" style={{animationDelay: '2s'}}>
           <h5>{window.innerWidth <= 769 ? 'Cnfmd' : 'Confirmed'}</h5>
+=======
+      <div id="MapStats" className="map-stats">
+        <div className="stats">
+          <h5>Confirmed</h5>
+>>>>>>> First commit: Add slang and minor edits
           <div className="stats-bottom">
             <h1>{formatNumber(panelRegion.confirmed)}</h1>
             <h6>{}</h6>

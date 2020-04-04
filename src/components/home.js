@@ -16,6 +16,7 @@ import Level from './level';
 import MapExplorer from './mapexplorer';
 import TimeSeries from './timeseries';
 import Minigraph from './minigraph';
+import SlangInterface from '../voice/slang';
 
 function Home(props) {
   const [states, setStates] = useState([]);
@@ -226,6 +227,12 @@ function Home(props) {
                 mode={timeseriesMode}
                 logMode={timeseriesLogMode}
               />
+              <SlangInterface
+                states={states}
+                onHighlightState={onHighlightState}
+                stateDistrictWiseData={stateDistrictWiseData}
+                onHighlightDistrict={onHighlightDistrict}
+              />
             </React.Fragment>
           )}
         </div>
@@ -284,6 +291,13 @@ function Home(props) {
               </Link>
             </button>
           </div>
+            <TimeSeries
+              timeseries={timeseries}
+              type={graphOption}
+              mode={timeseriesMode}
+              logMode={timeseriesLogMode}
+            />
+          </React.Fragment>
         )}
       </div>
       <div className="home-right"></div>
