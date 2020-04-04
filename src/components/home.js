@@ -7,6 +7,7 @@ import Level from './level';
 import MapExplorer from './mapexplorer';
 import TimeSeries from './timeseries';
 import Minigraph from './minigraph';
+import SlangInterface from '../voice/slang';
 
 function Home(props) {
   const [states, setStates] = useState([]);
@@ -163,6 +164,12 @@ function Home(props) {
               type={graphOption}
               mode={timeseriesMode}
               logMode={timeseriesLogMode}
+            />
+            <SlangInterface
+              states={states}
+              onHighlightState={onHighlightState}
+              stateDistrictWiseData={stateDistrictWiseData}
+              onHighlightDistrict={onHighlightDistrict}
             />
           </React.Fragment>
         )}

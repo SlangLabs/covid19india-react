@@ -1,0 +1,64 @@
+@media only screen and (max-width: 600px) {
+
+  #slang-button {
+    left: 20px !important
+  }
+
+  #slang-surface {
+    font-family: 'Archia';
+    font-weight: 100;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: -0.5rem !important;
+    border-radius: 0rem !important;
+  }
+
+  #slang-surface div:last-child img:last-child {
+    height: 0.5rem !important;
+  }
+  #slang-surface img:last-child {
+    margin-right: 1.2rem;
+  }
+
+  #slang-surface {
+    min-width: 98vw !important;
+    margin: auto 0;
+  }
+
+  #slang-button img {
+    max-width: 50% !important;
+    max-height: 50% !important;
+  }
+
+  #slang-button {
+    border-radius: 0.5rem !important;
+
+    width: 7rem !important;
+    height: 3rem !important;
+    -webkit-box-shadow: 2px 3px 3px 0px rgba(0, 0, 0, 0.56);
+    -moz-box-shadow: 2px 3px 3px 0px rgba(0, 0, 0, 0.56);
+    box-shadow: 2px 3px 3px 0px rgba(0, 0, 0, 0.56);
+  }
+
+  #slang-button::before {
+    content: 'Query with ';
+    font-family: 'Archia';
+    color: white !important;
+    font-size: 0.7rem;
+
+  }
+}
+
+/* 
+  ##Device = Low Resolution Tablets, Mobiles (Landscape)
+  ##Screen = B/w 481px to 767px
+*/
+
+@media (min-width: 481px) and (max-width: 767px) {}
+
+/* 
+    ##Device = Most of the Smartphones Mobiles (Portrait)
+    ##Screen = B/w 320px to 479px
+  */
+
+@media (min-width: 320px) and (max-width: 480px) {}

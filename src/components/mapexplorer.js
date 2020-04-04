@@ -380,7 +380,7 @@ export default function ({states, stateDistrictWiseData, regionHighlighted}) {
         )}
       </div>
 
-      <div className="map-stats">
+      <div id="MapStats" className="map-stats">
         <div className="stats">
           <h5>Confirmed</h5>
           <div className="stats-bottom">

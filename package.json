@@ -2,7 +2,7 @@
   "name": "covid19india",
   "version": "1.0.0",
   "private": true,
-  "homepage": "http://covid19india.github.io/",
+  "homepage": "https://covid19india.slanglabs.in/",
   "dependencies": {
     "axios": "^0.19.2",
     "d3": "^5.15.0",
@@ -18,7 +18,8 @@
     "react-router-dom": "^5.1.2",
     "react-scripts": "3.4.0",
     "sass-lint": "^1.13.1",
-    "topojson": "^3.0.2"
+    "topojson": "^3.0.2",
+    "slang-web-sdk": "^1.0.0"
   },
   "scripts": {
     "start": "react-scripts start",
