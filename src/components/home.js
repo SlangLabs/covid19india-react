@@ -21,7 +21,6 @@ function Home(props) {
   const [graphOption, setGraphOption] = useState(1);
   const [lastUpdated, setLastUpdated] = useState('');
   const [timeseries, setTimeseries] = useState([]);
-  const [deltas, setDeltas] = useState([]);
   const [timeseriesMode, setTimeseriesMode] = useState(true);
   const [timeseriesLogMode, setTimeseriesLogMode] = useState(false);
   const [regionHighlighted, setRegionHighlighted] = useState(undefined);
@@ -42,7 +41,6 @@ function Home(props) {
       setStates(response.data.statewise);
       setTimeseries(response.data.cases_time_series);
       setLastUpdated(response.data.statewise[0].lastupdatedtime);
-      setDeltas(response.data.key_values[0]);
       setStateDistrictWiseData(stateDistrictWiseResponse.data);
       /* setPatients(rawDataResponse.data.raw_data.filter((p) => p.detectedstate));*/
       setFetched(true);
@@ -87,7 +85,8 @@ function Home(props) {
             </div>
           </div>
         </div>
-        <Level data={states} deltas={deltas} />
+
+        {states.length > 1 && <Level data={states} />}
         <Minigraph timeseries={timeseries} animate={true} />
         <Table
           states={states}
