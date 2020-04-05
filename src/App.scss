@@ -687,11 +687,12 @@ h6 {
   position: relative;
   display: flex;
   flex-direction: column;
-  width: 30rem;
+  width: 62rem;
+  max-width: calc(100% - 2rem);
   align-self: center;
   justify-content: space-between;
   padding-top: 2rem;
-  margin-bottom: 1rem;
+  margin: 0 1rem 1em 1em;
 
   h1,
   h6 {
@@ -835,10 +836,12 @@ h6 {
 
 .Level {
   display: flex;
+  max-width: calc(100% - 2rem);
+  margin: 0 1rem;
   flex-direction: row;
   justify-content: space-between;
   align-self: center;
-  width: 30rem;
+  width: 62rem;
 
   .level-item {
     display: flex;
@@ -1735,7 +1738,9 @@ input.switch:checked::after {
 }
 
 .Minigraph {
-  width: 30rem;
+  width: 62rem;
+  max-width: calc(100% - 2rem);
+  margin: 0 1rem;
   align-self: center;
   margin: 0;
   display: flex;

@@ -26,7 +26,7 @@ function Home(props) {
   const [stateTestData, setStateTestData] = useState({});
   const [patients, setPatients] = useState([]);
   const [fetched, setFetched] = useState(false);
-  const [graphOption, setGraphOption] = useState(1);
+  const [graphOption, setGraphOption] = useState(2);
   const [lastUpdated, setLastUpdated] = useState('');
   const [timeseries, setTimeseries] = useState({});
   const [activeStateCode, setActiveStateCode] = useState('TT'); // TT -> India
