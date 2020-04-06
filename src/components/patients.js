@@ -123,6 +123,7 @@ function Patients(props) {
 
   return (
     <React.Fragment>
+<<<<<<< HEAD
       <PatientsView
         logs={logs}
         setModal={setModal}
@@ -130,6 +131,163 @@ function Patients(props) {
         expand={props.expand}
         applyClass={getClassNameFn(props.colorMode)}
       />
+=======
+      {props.colorMode === 'genders' && (
+        <div className="Patients fadeInUp" style={{animationDelay: '1s'}}>
+          {Object.keys(logs)
+            .slice(props.summary ? -1 : 0)
+            .map((day, index) => {
+              if (day !== 'Invalid Date') {
+                return (
+                  <React.Fragment key={index}>
+                    <h5 className="daylabel">
+                      {format(new Date(day), 'dd MMM, yyyy')}
+                    </h5>
+                    <div
+                      key={index}
+                      className={`day ${props.summary ? 'summary' : ''}`}
+                    >
+                      {logs[day]
+                        .slice(props.summary ? -40 : 0)
+                        .map((patient, indexTwo) => {
+                          return (
+                            <div
+                              key={indexTwo}
+                              className={`patient-card ${
+                                patient.gender === 'F'
+                                  ? 'is-femme'
+                                  : patient.gender === 'M'
+                                  ? 'is-male'
+                                  : ''
+                              }`}
+                              onClick={() => {
+                                setModal(true);
+                                setPatient(patient);
+                              }}
+                            >
+                              <h3>P{patient.patientnumber}</h3>
+                            </div>
+                          );
+                        })}
+                    </div>
+                  </React.Fragment>
+                );
+              } else {
+                return null;
+              }
+            })}
+        </div>
+      )}
+
+      {props.colorMode === 'transmission' && (
+        <div className="Patients fadeInUp" style={{animationDelay: '1s'}}>
+          {Object.keys(logs)
+            .slice(props.summary ? -1 : 0)
+            .map((day, index) => {
+              if (day !== 'Invalid Date') {
+                return (
+                  <React.Fragment>
+                    <h5 className="daylabel">
+                      {format(new Date(day), 'dd MMM, yyyy')}
+                    </h5>
+                    <div
+                      key={index}
+                      className={`day ${props.summary ? 'summary' : ''}`}
+                    >
+                      {logs[day]
+                        .slice(props.summary ? -40 : 0)
+                        .map((patient, indexTwo) => {
+                          return (
+                            <div
+                              key={indexTwo}
+                              className={`patient-card ${
+                                patient.typeoftransmission === 'Local'
+                                  ? 'is-local'
+                                  : patient.typeoftransmission === 'Imported'
+                                  ? 'is-imported'
+                                  : ''
+                              }`}
+                              onClick={() => {
+                                setModal(true);
+                                setPatient(patient);
+                              }}
+                            >
+                              <h3>P{patient.patientnumber}</h3>
+                            </div>
+                          );
+                        })}
+                    </div>
+                  </React.Fragment>
+                );
+              } else {
+                return null;
+              }
+            })}
+        </div>
+      )}
+
+      {props.colorMode === 'nationality' && (
+        <div className="Patients fadeInUp" style={{animationDelay: '1s'}}>
+          {Object.keys(logs)
+            .slice(props.summary ? -1 : 0)
+            .map((day, index) => {
+              if (day !== 'Invalid Date') {
+                return (
+                  <React.Fragment>
+                    <h5 className="daylabel">
+                      {format(new Date(day), 'dd MMM, yyyy')}
+                    </h5>
+                    <div
+                      key={index}
+                      className={`day ${props.summary ? 'summary' : ''}`}
+                    >
+                      {logs[day]
+                        .slice(props.summary ? -40 : 0)
+                        .map((patient, indexTwo) => {
+                          return (
+                            <div
+                              key={indexTwo}
+                              className={`patient-card ${
+                                patient.nationality === 'India'
+                                  ? 'is-in'
+                                  : patient.nationality === 'Myanmar'
+                                  ? 'is-mm'
+                                  : patient.nationality === 'Indonesia'
+                                  ? 'is-id'
+                                  : patient.nationality === 'United Kingdom'
+                                  ? 'is-uk'
+                                  : patient.nationality ===
+                                    'United States of America'
+                                  ? 'is-us'
+                                  : patient.nationality === 'Thailand'
+                                  ? 'is-th'
+                                  : patient.nationality === 'Phillipines'
+                                  ? 'is-ph'
+                                  : patient.nationality === 'Italy'
+                                  ? 'is-it'
+                                  : patient.nationality === 'Canada'
+                                  ? 'is-ca'
+                                  : ''
+                              }`}
+                              onClick={() => {
+                                setModal(true);
+                                setPatient(patient);
+                              }}
+                            >
+                              <h3>P{patient.patientnumber}</h3>
+                            </div>
+                          );
+                        })}
+                    </div>
+                  </React.Fragment>
+                );
+              } else {
+                return null;
+              }
+            })}
+        </div>
+      )}
+>>>>>>> Layout change, Mini top banner and minor fixes
 
       {modal && (
         <div className="modal" id="modal">

@@ -55,13 +55,6 @@ function SlangInterface(props) {
         return item.state.trim().toLowerCase() === stateQuery;
       });
 
-    // active: "183"
-    // confirmed: "215"
-    // deaths: "7"
-    // delta: {active: 12, confirmed: 12, deaths: 0, recovered: 0}
-    // lastupdatedtime: "30/03/2020 10:02:25"
-    // recovered: "25"
-    // state: "Maharashtra"
     if (dataTypeQuery && stateQuery && theNumber && theNumber[dataTypeQuery]) {
       props.onHighlightState(theNumber, index);
       window.location.hash = '#MapStats';
@@ -94,7 +87,6 @@ function SlangInterface(props) {
           index = item.state;
           district = item.name;
           state = item;
-          console.log(item.confirmed);
           return item.confirmed;
         }
         return acc;

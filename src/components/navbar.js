@@ -21,6 +21,7 @@ function Navbar(props) {
           transition: 'all 0.3s ease-in-out',
         }}
       >
+<<<<<<< HEAD
         <Link to="/">
           <img
             className="fadeInUp logo"
@@ -41,6 +42,25 @@ function Navbar(props) {
                   onClick={() => setMenuVisible(false)}
                   to={page.pageLink}
                   key={i}
+=======
+        <div className="navbar-left">
+          <img
+            className="fadeInUp logo"
+            alt="India COVID-19 Tracker"
+            src="/icon.png"
+            style={{
+              animationDelay: '0.0s',
+              width: window.location.pathname === '/clusters' ? '1.5rem' : '',
+              height: window.location.pathname === '/clusters' ? '1.5rem' : '',
+              transition: 'all 0.3s ease-in-out',
+            }}
+          />
+          {props.pages.map((page, i) => {
+            return (
+              <Link to={page.pageLink} key={i}>
+                <span
+                  {...navLinkProps(page.pageLink, page.animationDelayForNavbar)}
+>>>>>>> Layout change, Mini top banner and minor fixes
                 >
                   <span
                     {...navLinkProps(

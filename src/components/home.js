@@ -16,9 +16,8 @@ import Level from './level';
 import MapExplorer from './mapexplorer';
 import TimeSeries from './timeseries';
 import Minigraph from './minigraph';
-/* import Patients from './patients';*/
-import SlangInterface from '../voice/slang';
 import Patients from './patients';
+import SlangInterface from '../voice/slang';
 
 function Home(props) {
   const [states, setStates] = useState([]);
@@ -290,6 +289,19 @@ function Home(props) {
                 <div className="circle"></div>
                 <h5 className="">Unknown</h5>
               </div>
+              <div className="patients-summary-wrapper">
+                <Patients
+                  patients={patients}
+                  summary={true}
+                  colorMode={'genders'}
+                />
+              </div>
+              <button className="button">
+                <Link to="/database">
+                  <Icon.Database />
+                  <span>View the Patients Database</span>
+                </Link>
+              </button>
             </div>
             <div className="patients-summary-wrapper">
               <Patients
