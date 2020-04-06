@@ -6,21 +6,21 @@ import {
   formatDateAbsolute,
   validateCTS,
 } from '../utils/common-functions';
-/* import * as Icon from 'react-feather';
-import {Link} from 'react-router-dom';*/
+import * as Icon from 'react-feather';
+import {Link} from 'react-router-dom';
 
 import Table from './table';
 import Level from './level';
 import MapExplorer from './mapexplorer';
 import TimeSeries from './timeseries';
 import Minigraph from './minigraph';
-/* import Patients from './patients';*/
+import Patients from './patients';
 import SlangInterface from '../voice/slang';
 
 function Home(props) {
   const [states, setStates] = useState([]);
   const [stateDistrictWiseData, setStateDistrictWiseData] = useState({});
-  /* const [patients, setPatients] = useState([]);*/
+  const [patients, setPatients] = useState([]);
   const [fetched, setFetched] = useState(false);
   const [graphOption, setGraphOption] = useState(2);
   const [lastUpdated, setLastUpdated] = useState('');
@@ -37,16 +37,20 @@ function Home(props) {
 
   const getStates = async () => {
     try {
-      const [response, stateDistrictWiseResponse] = await Promise.all([
+      const [
+        response,
+        stateDistrictWiseResponse,
+        rawDataResponse,
+      ] = await Promise.all([
         axios.get('https://api.covid19india.org/data.json'),
         axios.get('https://api.covid19india.org/state_district_wise.json'),
-        /* axios.get('https://api.covid19india.org/raw_data.json'),*/
+        axios.get('https://api.covid19india.org/raw_data.json'),
       ]);
       setStates(response.data.statewise);
       setTimeseries(validateCTS(response.data.cases_time_series));
       setLastUpdated(response.data.statewise[0].lastupdatedtime);
       setStateDistrictWiseData(stateDistrictWiseResponse.data);
-      /* setPatients(rawDataResponse.data.raw_data.filter((p) => p.detectedstate));*/
+      setPatients(rawDataResponse.data.raw_data.filter((p) => p.detectedstate));
       setFetched(true);
     } catch (err) {
       console.log(err);
@@ -64,7 +68,7 @@ function Home(props) {
 
   return (
     <>
-      <div style={{width: 960, maxWidth: '100%', margin: '5px auto'}}>
+      <div style={{maxWidth: '65rem', margin: '1rem auto'}}>
         <div className="header fadeInUp" style={{animationDelay: '0.5s'}}>
           <div className="header-mid">
             <div className="titles">
@@ -96,11 +100,13 @@ function Home(props) {
       <div className="Home">
         <div className="home-left">
           {fetched && (
-            <MapExplorer
-              states={states}
-              stateDistrictWiseData={stateDistrictWiseData}
-              regionHighlighted={regionHighlighted}
-            />
+            <React.Fragment>
+              <MapExplorer
+                states={states}
+                stateDistrictWiseData={stateDistrictWiseData}
+                regionHighlighted={regionHighlighted}
+              />
+            </React.Fragment>
           )}
         </div>
 
@@ -112,6 +118,8 @@ function Home(props) {
             onHighlightState={onHighlightState}
             onHighlightDistrict={onHighlightDistrict}
           />
+        </div>
+        <div className="home-left">
           {fetched && (
             <React.Fragment>
               <div
@@ -187,41 +195,39 @@ function Home(props) {
             </React.Fragment>
           )}
         </div>
-      </div>
-
-      {/* <div className="home-left">
-        {patients.length > 1 && (
-          <div className="patients-summary">
-            <h1>Recent Cases</h1>
-            <h6>A summary of the latest reported cases</h6>
-            <div className="legend">
-              <div className="legend-left">
-                <div className="circle is-female"></div>
-                <h5 className="is-female">Female</h5>
-                <div className="circle is-male"></div>
-                <h5 className="is-male">Male</h5>
-                <div className="circle"></div>
-                <h5 className="">Unknown</h5>
+        <div className="home-right">
+          {' '}
+          {patients.length > 1 && (
+            <div className="patients-summary">
+              <h1>Recent Cases</h1>
+              <h6>A summary of the latest reported cases</h6>
+              <div className="legend">
+                <div className="legend-left">
+                  <div className="circle is-female"></div>
+                  <h5 className="is-female">Female</h5>
+                  <div className="circle is-male"></div>
+                  <h5 className="is-male">Male</h5>
+                  <div className="circle"></div>
+                  <h5 className="">Unknown</h5>
+                </div>
               </div>
+              <div className="patients-summary-wrapper">
+                <Patients
+                  patients={patients}
+                  summary={true}
+                  colorMode={'genders'}
+                />
+              </div>
+              <button className="button">
+                <Link to="/database">
+                  <Icon.Database />
+                  <span>View the Patients Database</span>
+                </Link>
+              </button>
             </div>
-            <div className="patients-summary-wrapper">
-              <Patients
-                patients={patients}
-                summary={true}
-                colorMode={'genders'}
-              />
-            </div>
-            <button className="button">
-              <Link to="/database">
-                <Icon.Database />
-                <span>View the Patients Database</span>
-              </Link>
-            </button>
-          </div>
-        )}
+          )}
+        </div>
       </div>
-      <div className="home-right"></div>
-    */}
     </>
   );
 }

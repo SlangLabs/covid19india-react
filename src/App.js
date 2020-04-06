@@ -13,8 +13,8 @@ import Home from './components/home';
 import Navbar from './components/navbar';
 import Links from './components/links';
 import FAQ from './components/faq';
-import Banner from './components/banner';
-/* import PatientDB from './components/patientdb';*/
+// import Banner from './components/banner';
+import PatientDB from './components/patientdb';
 
 const history = require('history').createBrowserHistory;
 
@@ -26,12 +26,12 @@ function App() {
       displayName: 'Home',
       animationDelayForNavbar: 0.2,
     },
-    /* {
+    {
       pageLink: '/database',
       view: PatientDB,
       displayName: 'Patients DB',
       animationDelayForNavbar: 0.3,
-    },*/
+    },
     {
       pageLink: '/links',
       view: Links,
@@ -53,6 +53,22 @@ function App() {
           render={({location}) => (
             <div className="Almighty-Router">
               <Navbar pages={pages} />
+              <div
+                className="MiniBanner fadeInUp"
+                style={{animationDelay: '0.2s'}}
+              >
+                <div className="snippet">
+                  Thanks to the amazing folks @{' '}
+                  <a
+                    href="https://www.covid19india.org/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    covid19india.org
+                  </a>{' '}
+                  for the original code and data
+                </div>
+              </div>
               <Route exact path="/" render={() => <Redirect to="/" />} />
               <Switch location={location}>
                 {pages.map((page, i) => {
@@ -76,8 +92,8 @@ function App() {
         {/* <img
           src="/icon.png"
           alt="https://www.covid19india.org | Coronavirus cases live dashboard"
-        /> */}
-        <Banner />
+        /> 
+        <Banner /> */}
         <h5>We stand with everyone fighting on the frontlines</h5>
         <div className="link">
           <a
@@ -89,7 +105,7 @@ function App() {
           </a>
         </div>
         <a
-          href="https://github.com/covid19india/covid19india-react"
+          href="https://github.com/SlangLabs/covid19india-react"
           className="button github"
           target="_blank"
           rel="noopener noreferrer"

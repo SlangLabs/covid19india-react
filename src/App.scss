@@ -136,7 +136,6 @@ $pink-mid: #ffa8cb99;
 
 @mixin navbarReveal($color) {
   $animation-name: unique-id() !global;
-
   animation-name: $animation-name;
   animation-duration: 0.75s;
   animation-timing-function: ease-in-out;
@@ -232,8 +231,8 @@ h6 {
   flex-direction: row;
   justify-content: center;
   flex-wrap: wrap;
-  margin-left: 5rem;
-  margin-right: 5rem;
+  max-width: 72rem; 
+  margin: 1rem auto;
 
   .home-left,
   .home-right {
@@ -274,6 +273,27 @@ h6 {
   }
 }
 
+.MiniBanner {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  line-height: 1rem;
+  font-family: 'Archia';
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: $purple;
+  background: $purple-light;
+
+  .snippet {
+    align-self: center;
+    width: calc(100% - 10rem);
+    word-wrap: break-word;
+    padding: 0.3rem;
+    text-align: center;
+    cursor: pointer;
+  }
+}
+
 .Navbar {
   display: flex;
   flex-direction: row;
@@ -288,6 +308,14 @@ h6 {
     margin-left: 2rem;
     flex: 1;
     align-self: center;
+    max-width: 72rem; 
+    margin: 5px auto;
+
+    img {
+
+      vertical-align: middle;
+      margin-right: 2rem;
+    }
 
     a {
       display: inline-block;
@@ -2182,6 +2210,7 @@ select {
       height: 2rem;
       margin-left: 1rem;
       margin-right: -1rem;
+      vertical-align: middle;
       cursor: pointer;
     }
   }
@@ -2218,6 +2247,28 @@ select {
       width: 100%;
       margin-left: 1rem;
       margin-right: 1rem;
+    }
+  }
+
+  .MiniBanner {
+    height: 2rem;
+
+    .snippet {
+      width: 100%;
+      margin-left: 1rem;
+      margin-right: 1rem;
+    }
+  }
+
+  .MiniBanner {
+    line-height: 1.2rem;
+    font-family: 'Archia';
+    font-size: 0.8rem;
+    height: 3rem;
+    .snippet {
+
+      padding: 1rem;
+   
     }
   }
 
