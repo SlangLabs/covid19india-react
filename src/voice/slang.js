@@ -6,7 +6,7 @@ import './slang.css';
 Slang.initialize({
   buddyId,
   apiKey,
-  env: 'stage', // one of ['stage','prod']
+  env: 'prod', // one of ['stage','prod']
   locale: 'en-IN', // one of ['en-IN','hi-IN']
   onSuccess: () => {
     console.log('Slang initialized successfully'); // anything you want to do once slang gets init successfully
@@ -15,11 +15,54 @@ Slang.initialize({
     console.log('Slang Failed to initialize'); // anything you want to do once slang fails to init
   },
 });
+let theNumberDistrict = [];
+
+export function SlangPatients(props) {
+  const {handleFilters} = props;
+
+  try {
+    Slang.setIntentActionHandler((intent) => {
+      switch (intent.name) {
+        case 'reply_with_districts':
+          const districtQuery =
+            intent.getEntity('district').isResolved &&
+            intent.getEntity('district').value.trim(); // .toLowerCase()
+          const theState =
+            districtQuery &&
+            theNumberDistrict.reduce((acc, item) => {
+              if (
+                item.name.trim().toLowerCase() === districtQuery.toLowerCase()
+              ) {
+                return item.state;
+              }
+              return acc;
+            }, '');
+          if (theState) {
+            handleFilters('detectedstate', theState);
+            handleFilters('detecteddistrict', districtQuery);
+          }
+          return true;
+        case 'reply_with_states':
+          const stateQuery =
+            intent.getEntity('state').isResolved &&
+            intent.getEntity('state').value.trim(); // .toLowerCase();
+          if (stateQuery) handleFilters('detectedstate', stateQuery);
+          return true;
+        default:
+          return false;
+      }
+    });
+  } catch (error) {
+    console.log(error);
+  }
+
+  return null;
+}
 
 function SlangInterface(props) {
   const {states, stateDistrictWiseData} = props;
 
-  const theNumberDistrict = Object.keys(stateDistrictWiseData).reduce(
+  theNumberDistrict = Object.keys(stateDistrictWiseData).reduce(
     (acc, state) => {
       const dist = Object.keys(stateDistrictWiseData[state]['districtData'])
         .filter((i) => i.toLowerCase() !== 'unknown')

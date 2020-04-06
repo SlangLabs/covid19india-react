@@ -10,7 +10,7 @@ import * as Icon from 'react-feather';
 import './App.scss';
 
 import Home from './components/home';
-import Navbar from './components/navbar';
+// import Navbar from './components/navbar';
 import Links from './components/links';
 import FAQ from './components/faq';
 // import Banner from './components/banner';
@@ -52,7 +52,7 @@ function App() {
         <Route
           render={({location}) => (
             <div className="Almighty-Router">
-              <Navbar pages={pages} />
+              {/* <Navbar pages={pages} /> */}
               <div
                 className="MiniBanner fadeInUp"
                 style={{animationDelay: '0.2s'}}

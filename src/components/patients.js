@@ -111,7 +111,7 @@ function Patients(props) {
             .map((day, index) => {
               if (day !== 'Invalid Date') {
                 return (
-                  <React.Fragment>
+                  <React.Fragment key={index}>
                     <h5 className="daylabel">
                       {format(new Date(day), 'dd MMM, yyyy')}
                     </h5>
@@ -158,7 +158,7 @@ function Patients(props) {
             .map((day, index) => {
               if (day !== 'Invalid Date') {
                 return (
-                  <React.Fragment>
+                  <React.Fragment key={index}>
                     <h5 className="daylabel">
                       {format(new Date(day), 'dd MMM, yyyy')}
                     </h5>

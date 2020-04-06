@@ -81,17 +81,6 @@ function Row(props) {
 
   return (
     <React.Fragment>
-      <span
-        className={`dropdown ${
-          props.reveal ? 'rotateRightDown' : 'rotateDownRight'
-        }`}
-        style={{display: !props.total ? '' : 'none'}}
-        onClick={() => {
-          handleReveal();
-        }}
-      >
-        <Icon.ChevronDown />
-      </span>
       <tr
         className={props.total ? 'state is-total' : 'state'}
         onMouseEnter={() => props.onHighlightState?.(state, props.index)}
@@ -100,7 +89,20 @@ function Row(props) {
         onClick={!props.total ? handleReveal : null}
         style={{background: props.index % 2 === 0 ? '#f8f9fa' : ''}}
       >
-        <td style={{fontWeight: 600}}>{state.state}</td>
+        <td style={{fontWeight: 600}}>
+          <span
+            className={`dropdown ${
+              props.reveal ? 'rotateRightDown' : 'rotateDownRight'
+            }`}
+            style={{display: !props.total ? '' : 'none'}}
+            onClick={() => {
+              handleReveal();
+            }}
+          >
+            <Icon.ChevronDown />
+          </span>
+          {state.state}
+        </td>
         <td>
           <span className="deltas" style={{color: '#ff073a'}}>
             {state.deltaconfirmed > 0 && <Icon.ArrowUp />}

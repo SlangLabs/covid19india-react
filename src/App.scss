@@ -288,7 +288,7 @@ h6 {
     align-self: center;
     width: calc(100% - 10rem);
     word-wrap: break-word;
-    padding: 0.3rem;
+    padding: 0.7rem;
     text-align: center;
     cursor: pointer;
   }
@@ -2161,6 +2161,19 @@ select {
   }
 }
 
+.TopNumbers {
+  max-width: 65rem;
+  margin: 1rem auto;
+}
+
+@media (max-width: 1119px) {
+  .TopNumbers {
+    max-width: 35rem;
+    margin: 1rem auto;
+  }
+
+}
+
 @media (max-width: 769px) {
   .TimeSeries,
   table,
@@ -2251,7 +2264,7 @@ select {
   }
 
   .MiniBanner {
-    height: 2rem;
+    height: 3rem;
 
     .snippet {
       width: 100%;

@@ -4,6 +4,7 @@ import axios from 'axios';
 
 import Patients from './patients';
 import DownloadBlock from './downloadblock';
+import {SlangPatients} from '../voice/slang';
 
 function filterByObject(obj, filters) {
   const keys = Object.keys(filters);
@@ -28,7 +29,7 @@ function PatientDB(props) {
     dateannounced: '',
   });
   const [colorMode, setColorMode] = useState('genders');
-
+  const {detectedstate, detecteddistrict, detectedcity} = filters;
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [pathname]);
@@ -53,6 +54,7 @@ function PatientDB(props) {
   }, [fetched]);
 
   const handleFilters = (label, value) => {
+    console.log(label, value);
     setFilters((f) => {
       // Create new object (deep copy)
       const newFilters = {...f};
@@ -91,7 +93,6 @@ function PatientDB(props) {
     if (setValues.size > 1) setValues.add('');
     return Array.from(setValues).sort();
   }
-
   return (
     <div className="PatientsDB">
       {error ? <div className="alert alert-danger">{error}</div> : ''}
@@ -102,11 +103,12 @@ function PatientDB(props) {
             <select
               style={{animationDelay: '0.3s'}}
               id="state"
+              value={detectedstate}
               onChange={(event) => {
                 handleFilters('detectedstate', event.target.value);
               }}
             >
-              <option value="" disabled selected>
+              <option value="" disabled>
                 Select State
               </option>
               {getSortedValues(patients, 'detectedstate').map(
@@ -125,11 +127,12 @@ function PatientDB(props) {
             <select
               style={{animationDelay: '0.4s', display: 'none'}}
               id="district"
+              value={detecteddistrict}
               onChange={(event) => {
                 handleFilters('detecteddistrict', event.target.value);
               }}
             >
-              <option value="" disabled selected>
+              <option value="" disabled>
                 Select District
               </option>
               {getSortedValues(
@@ -151,11 +154,12 @@ function PatientDB(props) {
             <select
               style={{animationDelay: '0.4s', display: 'none'}}
               id="city"
+              value={detectedcity}
               onChange={(event) => {
                 handleFilters('detectedcity', event.target.value);
               }}
             >
-              <option value="" disabled selected>
+              <option value="" disabled>
                 Select City
               </option>
               {getSortedValues(
@@ -247,7 +251,7 @@ function PatientDB(props) {
                 setColorMode(event.target.value);
               }}
             >
-              <option value="" disabled selected>
+              <option value="" disabled>
                 Color modes
               </option>
               <option value="genders">Genders</option>
@@ -259,14 +263,33 @@ function PatientDB(props) {
       </div>
 
       <div className="header fadeInUp" style={{animationDelay: '0.3s'}}>
+        <div
+          style={{color: '#6c757d', cursor: 'pointer'}}
+          className="legend-left"
+          href="#"
+          onClick={() => {
+            window.history.go(-1);
+            return false;
+          }}
+        >
+          <h5>Back</h5>
+        </div>
+        <br />
+
         <h1>Patients Database</h1>
         <h3>No. of Patients: {patients.length}</h3>
+        <h3>
+          {' '}
+          {detectedstate}{' '}
+          {detecteddistrict !== '' ? ` - ${detecteddistrict}` : ''}
+        </h3>
       </div>
 
       <div className="patientdb-wrapper">
         <Patients patients={filteredPatients} colorMode={colorMode} />
       </div>
       <DownloadBlock patients={patients} />
+      <SlangPatients handleFilters={handleFilters} />
     </div>
   );
 }
