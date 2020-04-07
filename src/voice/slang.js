@@ -3,6 +3,7 @@ import Slang from 'slang-web-sdk';
 import {buddyId, apiKey} from './buddy.js';
 import './slang.css';
 
+Slang.requestLocales(['en-IN', 'hi-IN']);
 Slang.initialize({
   buddyId,
   apiKey,
@@ -86,7 +87,6 @@ function SlangInterface(props) {
     const stateQuery =
       intent.getEntity('state').isResolved &&
       intent.getEntity('state').value.trim().toLowerCase();
-
     const dataTypeQuery = intent.getEntity('data_type').isResolved
       ? intent.getEntity('data_type').value.trim().toLowerCase()
       : 'confirmed';
@@ -122,44 +122,59 @@ function SlangInterface(props) {
     const districtQuery =
       intent.getEntity('district').isResolved &&
       intent.getEntity('district').value.trim().toLowerCase();
+    const dataTypeQuery = intent.getEntity('data_type').isResolved
+      ? intent.getEntity('data_type').value.trim().toLowerCase()
+      : 'confirmed';
 
-    const theNumberDistrictConfirmed =
-      districtQuery &&
-      theNumberDistrict.reduce((acc, item) => {
-        if (item.name.trim().toLowerCase() === districtQuery) {
-          index = item.state;
-          district = item.name;
-          state = item;
-          return item.confirmed;
-        }
-        return acc;
-      }, '');
-    if (districtQuery && theNumberDistrictConfirmed) {
-      window.location.hash = '#MapStats';
-      index = states.findIndex((x) => x.state === index);
-      props.onHighlightDistrict(district, state, index);
-
+    if (dataTypeQuery !== 'confirmed') {
       Slang.startConversation(
-        'Confirmed cases in ' +
-          districtQuery +
-          ' is ' +
-          theNumberDistrictConfirmed,
+        'Sorry. Data is available only for confirmed cases currently at a district level',
         true
       );
     } else {
-      Slang.startConversation("We couldn't find data for your query.", true);
+      const theNumberDistrictConfirmed =
+        districtQuery &&
+        theNumberDistrict.reduce((acc, item) => {
+          if (item.name.trim().toLowerCase() === districtQuery) {
+            index = item.state;
+            district = item.name;
+            state = item;
+            return item.confirmed;
+          }
+          return acc;
+        }, '');
+      if (districtQuery && theNumberDistrictConfirmed) {
+        window.location.hash = '#MapStats';
+        index = states.findIndex((x) => x.state === index);
+        props.onHighlightDistrict(district, state, index);
+
+        Slang.startConversation(
+          'Confirmed cases in ' +
+            districtQuery +
+            ' is ' +
+            theNumberDistrictConfirmed,
+          true
+        );
+      } else {
+        Slang.startConversation("We couldn't find data for your query.", true);
+      }
     }
     window.location.hash = '#_';
   };
+
   try {
     Slang.setIntentActionHandler((intent) => {
+      console.log(intent.name);
+      console.log(intent);
       switch (intent.name) {
         case 'reply_with_districts':
           replyWithDistricts(intent);
           return true;
+
         case 'reply_with_states':
           replyWithStates(intent);
           return true;
+
         default:
           return false;
       }
