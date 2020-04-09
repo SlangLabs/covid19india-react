@@ -13,7 +13,7 @@
 ## Setup
 
 ```
-$ yarn
+$ yarn install
 ```
 
 ## Voice Setup
