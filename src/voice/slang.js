@@ -1,14 +1,23 @@
-import Slang from 'slang-web-sdk';
+/**
+ * This code integrates voice queires to the dashboard with Slang.
+ */
 
+import Slang from 'slang-web-sdk';
 import {buddyId, apiKey} from './buddy.js';
 import './slang.css';
 
+let theDistricts = [];
+let selectedLocale = localStorage.getItem('slangLocale') || 'en-IN';
+const env = 'prod';
+
+// set the default selectable locales on the slang trigger
 Slang.requestLocales(['en-IN', 'hi-IN']);
+// Initialise Slang with the below params
 Slang.initialize({
   buddyId,
   apiKey,
-  env: 'prod', // one of ['stage','prod']
-  locale: 'en-IN', // one of ['en-IN','hi-IN']
+  env, // one of ['stage','prod']
+  locale: selectedLocale, // one of ['en-IN','hi-IN']
   onSuccess: () => {
     console.log('Slang initialized successfully'); // anything you want to do once slang gets init successfully
   },
@@ -16,66 +25,107 @@ Slang.initialize({
     console.log('Slang Failed to initialize'); // anything you want to do once slang fails to init
   },
 });
-let theNumberDistrict = [];
 
-export function SlangPatients(props) {
-  const {handleFilters} = props;
+// arrays of ASR biasing words for each locale
+const hints = {
+  'en-IN': [
+    'active',
+    'recovered',
+    'deceased',
+    'confirmed',
+    'active cases',
+    'recovered cases',
+    'deceased cases',
+    'confirmed cases',
+  ],
+  'en-US': [
+    'active',
+    'recovered',
+    'deceased',
+    'confirmed',
+    'active cases',
+    'recovered cases',
+    'deceased cases',
+    'confirmed cases',
+  ],
+};
+// set the above hints
+Slang.setASRHints(hints);
 
-  try {
-    Slang.setIntentActionHandler((intent) => {
-      switch (intent.name) {
-        case 'reply_with_districts':
-          const districtQuery =
-            intent.getEntity('district').isResolved &&
-            intent.getEntity('district').value.trim(); // .toLowerCase()
-          const theState =
-            districtQuery &&
-            theNumberDistrict.reduce((acc, item) => {
-              if (
-                item.name.trim().toLowerCase() === districtQuery.toLowerCase()
-              ) {
-                return item.state;
-              }
-              return acc;
-            }, '');
-          if (theState) {
-            handleFilters('detectedstate', theState);
-            handleFilters('detecteddistrict', districtQuery);
-          }
-          return true;
-        case 'reply_with_states':
-          const stateQuery =
-            intent.getEntity('state').isResolved &&
-            intent.getEntity('state').value.trim(); // .toLowerCase();
-          if (stateQuery) handleFilters('detectedstate', stateQuery);
-          return true;
-        default:
-          return false;
-      }
-    });
-  } catch (error) {
-    console.log(error);
+const uiObs = (UIState) => {
+  if (UIState.selectedLocale !== selectedLocale) {
+    selectedLocale = UIState.selectedLocale;
+    localStorage.setItem('slangLocale', selectedLocale);
   }
+};
+Slang.registerUIObserver(uiObs);
 
-  return null;
-}
+const replyValues = ({
+  caseFor,
+  dataTypeQuery,
+  districtQuery,
+  stateQuery,
+  number,
+}) => {
+  console.log(caseFor, dataTypeQuery, districtQuery, stateQuery, number);
+  switch (caseFor) {
+    case 'replyWithDistricts':
+      if (selectedLocale === 'hi-IN') {
+        return districtQuery + ' में पुष्ट मामलो की संख्या ' + number + ' है ';
+      }
+      return 'Confirmed cases in ' + districtQuery + ' is ' + number;
+    case 'replyWithStates':
+      if (selectedLocale === 'hi-IN') {
+        switch (dataTypeQuery) {
+          case 'active':
+            return stateQuery + ' मैं ऐक्टिव कसेस की संख्या ' + number + ' है ';
+          case 'confirmed':
+            return stateQuery + ' में पुष्ट मामलो की संख्या ' + number + ' है ';
+          case 'recovered':
+            return (
+              stateQuery +
+              ' में स्वस्थ होनेवाले मामलों की संख्या ' +
+              number +
+              ' है '
+            );
+          case 'deceased':
+            return stateQuery + ' में ' + number + ' लोगो की मौत हो चुकी हैं ';
+          default:
+            console.log('data type not found');
+            break;
+        }
+      }
+      return dataTypeQuery + ' cases in ' + stateQuery + ' is ' + number;
+    case 'noDataDistrict':
+      if (selectedLocale === 'hi-IN') {
+        return 'माफ़ करना। डेटा केवल जिला स्तर पर वर्तमान में पुष्टि किए गए मामलों के लिए उपलब्ध है';
+      }
+
+      return 'Sorry. Data is available only for confirmed cases currently at a district level';
+    case 'noDataState':
+      if (selectedLocale === 'hi-IN') {
+        return 'हमें आपकी क्वेरी के लिए डेटा नहीं मिला।';
+      }
+
+      return "We couldn't find data for your query.";
+    default:
+      return false;
+  }
+};
 
 function SlangInterface(props) {
   const {states, stateDistrictWiseData} = props;
 
-  theNumberDistrict = Object.keys(stateDistrictWiseData).reduce(
-    (acc, state) => {
-      const dist = Object.keys(stateDistrictWiseData[state]['districtData'])
-        .filter((i) => i.toLowerCase() !== 'unknown')
-        .map((district) => ({
-          name: district,
-          state: state,
-          ...stateDistrictWiseData[state]['districtData'][district],
-        }));
-      return [...acc, ...dist];
-    },
-    []
-  );
+  theDistricts = Object.keys(stateDistrictWiseData).reduce((acc, state) => {
+    const dist = Object.keys(stateDistrictWiseData[state]['districtData'])
+      .filter((i) => i.toLowerCase() !== 'unknown')
+      .map((district) => ({
+        name: district,
+        state: state,
+        ...stateDistrictWiseData[state]['districtData'][district],
+      }));
+    return [...acc, ...dist];
+  }, []);
 
   let index;
   let district;
@@ -101,16 +151,19 @@ function SlangInterface(props) {
     if (dataTypeQuery && stateQuery && theNumber && theNumber[dataTypeQuery]) {
       props.onHighlightState(theNumber, index);
       window.location.hash = '#MapStats';
-      Slang.startConversation(
-        dataTypeQuery +
-          ' cases in ' +
-          stateQuery +
-          ' is ' +
-          theNumber[dataTypeQuery],
-        true
-      );
+      const prompt = replyValues({
+        caseFor: 'replyWithStates',
+        dataTypeQuery,
+        stateQuery,
+        number: theNumber[dataTypeQuery],
+      });
+      Slang.startConversation(prompt, true);
     } else {
-      Slang.startConversation("We couldn't find data for your query.", true);
+      const prompt = replyValues({
+        caseFor: 'noDataState',
+      });
+
+      Slang.startConversation(prompt, true);
     }
 
     window.location.hash = '#_';
@@ -122,19 +175,19 @@ function SlangInterface(props) {
     const districtQuery =
       intent.getEntity('district').isResolved &&
       intent.getEntity('district').value.trim().toLowerCase();
-    const dataTypeQuery = intent.getEntity('data_type').isResolved
-      ? intent.getEntity('data_type').value.trim().toLowerCase()
-      : 'confirmed';
+    const dataTypeQuery =
+      intent.getEntity('data_type').isResolved &&
+      intent.getEntity('data_type').value.trim().toLowerCase();
+    if (dataTypeQuery && dataTypeQuery !== 'confirmed') {
+      const prompt = replyValues({
+        caseFor: 'noDataDistrict',
+      });
 
-    if (dataTypeQuery !== 'confirmed') {
-      Slang.startConversation(
-        'Sorry. Data is available only for confirmed cases currently at a district level',
-        true
-      );
+      Slang.startConversation(prompt, true);
     } else {
       const theNumberDistrictConfirmed =
         districtQuery &&
-        theNumberDistrict.reduce((acc, item) => {
+        theDistricts.reduce((acc, item) => {
           if (item.name.trim().toLowerCase() === districtQuery) {
             index = item.state;
             district = item.name;
@@ -143,20 +196,22 @@ function SlangInterface(props) {
           }
           return acc;
         }, '');
-      if (districtQuery && theNumberDistrictConfirmed) {
+      if (theNumberDistrictConfirmed) {
         window.location.hash = '#MapStats';
         index = states.findIndex((x) => x.state === index);
         props.onHighlightDistrict(district, state, index);
+        const prompt = replyValues({
+          caseFor: 'replyWithDistricts',
+          districtQuery,
+          number: theNumberDistrictConfirmed,
+        });
 
-        Slang.startConversation(
-          'Confirmed cases in ' +
-            districtQuery +
-            ' is ' +
-            theNumberDistrictConfirmed,
-          true
-        );
+        Slang.startConversation(prompt, true);
       } else {
-        Slang.startConversation("We couldn't find data for your query.", true);
+        const prompt = replyValues({
+          caseFor: 'noDataState',
+        });
+        Slang.startConversation(prompt, true);
       }
     }
     window.location.hash = '#_';
@@ -164,8 +219,6 @@ function SlangInterface(props) {
 
   try {
     Slang.setIntentActionHandler((intent) => {
-      console.log(intent.name);
-      console.log(intent);
       switch (intent.name) {
         case 'reply_with_districts':
           replyWithDistricts(intent);
@@ -175,6 +228,54 @@ function SlangInterface(props) {
           replyWithStates(intent);
           return true;
 
+        default:
+          return false;
+      }
+    });
+  } catch (error) {
+    console.log(error);
+  }
+
+  return null;
+}
+
+// This function is used in the conjunction with the Patients DB of the dashboard to choose the state and or district while searching
+export function SlangPatients(props) {
+  // read the handleFilters prop of the component
+  const {handleFilters} = props;
+
+  try {
+    // set the intent handle with slang to perform tasks when an intent from the user is detected.
+    Slang.setIntentActionHandler((intent) => {
+      switch (intent.name) {
+        case 'reply_with_districts':
+          // read the district spoken by the user.
+          const districtQuery =
+            intent.getEntity('district').isResolved &&
+            intent.getEntity('district').value.trim(); // .toLowerCase()
+          // get the state where is district is in from the list available on the dashboard.
+
+          const theState =
+            districtQuery &&
+            theDistricts.reduce((acc, item) => {
+              if (
+                item.name.trim().toLowerCase() === districtQuery.toLowerCase()
+              ) {
+                return item.state;
+              }
+              return acc;
+            }, '');
+          if (theState) {
+            handleFilters('detectedstate', theState);
+            handleFilters('detecteddistrict', districtQuery);
+          }
+          return true;
+        case 'reply_with_states':
+          const stateQuery =
+            intent.getEntity('state').isResolved &&
+            intent.getEntity('state').value.trim(); // .toLowerCase();
+          if (stateQuery) handleFilters('detectedstate', stateQuery);
+          return true;
         default:
           return false;
       }
