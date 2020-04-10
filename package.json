@@ -25,12 +25,13 @@
     "react-dom": "^16.13.1",
     "react-feather": "^2.0.3",
     "react-infinite-scroll-component": "^5.0.4",
+    "react-ga": "^2.7.0",
     "react-router-dom": "^5.1.2",
     "react-scripts": "3.4.0",
     "react-table": "^7.0.4",
     "sass-lint": "^1.13.1",
-    "topojson": "^3.0.2",
-    "slang-web-sdk": "^1.0.0"
+    "slang-web-sdk": "^1.0.0",
+    "topojson": "^3.0.2"
   },
   "scripts": {
     "start": "react-scripts start",

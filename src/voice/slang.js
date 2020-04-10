@@ -5,11 +5,13 @@
 import Slang from 'slang-web-sdk';
 import {buddyId, apiKey} from './buddy.js';
 import './slang.css';
+import ReactGA from 'react-ga';
 
 let theDistricts = [];
 let selectedLocale = localStorage.getItem('slangLocale') || 'en-IN';
 const env = 'prod';
 
+ReactGA.initialize('UA-123830474-3');
 // set the default selectable locales on the slang trigger
 Slang.requestLocales(['en-IN', 'hi-IN']);
 // Initialise Slang with the below params
@@ -218,6 +220,13 @@ function SlangInterface(props) {
   };
 
   try {
+    Slang.setOnUtteranceDetected((string) => {
+      console.log('utterance - ' + string);
+      ReactGA.event({
+        category: 'Slang events',
+        action: 'trigger click',
+      });
+    });
     Slang.setIntentActionHandler((intent) => {
       switch (intent.name) {
         case 'reply_with_districts':
