@@ -98,16 +98,16 @@ const replyValues = ({
       return dataTypeQuery + ' cases in ' + stateQuery + ' is ' + number;
     case 'noDataDistrict':
       if (selectedLocale === 'hi-IN') {
-        return 'माफ़ करना। डेटा केवल जिला स्तर पर वर्तमान में पुष्टि किए गए मामलों के लिए उपलब्ध है';
+        return 'माफ़ करिये ।अभी हमारे पास ज़िला स्तर पर ख़ाली पुष्ट मामलों की संख्या है';
+      } else {
+        return 'Sorry. Data is available only for confirmed cases currently at a district level';
       }
-
-      return 'Sorry. Data is available only for confirmed cases currently at a district level';
     case 'noDataState':
       if (selectedLocale === 'hi-IN') {
-        return 'हमें आपकी क्वेरी के लिए डेटा नहीं मिला।';
+        return 'माफ़ करिये अभी हमारे पास इस का उत्तर नहीं है।';
+      } else {
+        return "We couldn't find data for your query.";
       }
-
-      return "We couldn't find data for your query.";
     default:
       return false;
   }
