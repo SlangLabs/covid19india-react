@@ -10,6 +10,8 @@ import ReactGA from 'react-ga';
 let theDistricts = [];
 let selectedLocale = localStorage.getItem('slangLocale') || 'en-IN';
 const env = 'stage';
+let speakOut = false;
+let speakText = '';
 
 ReactGA.initialize('UA-123830474-3');
 // set the default selectable locales on the slang trigger
@@ -22,6 +24,25 @@ Slang.initialize({
   locale: selectedLocale, // one of ['en-IN','hi-IN']
   onSuccess: () => {
     console.log('Slang initialized successfully'); // anything you want to do once slang gets init successfully
+    Slang.builtinUi.setConfig({
+      overridenOnTriggerClick: async () => {
+        const lastUsed = localStorage.getItem('SlangLastUsed');
+        if (!lastUsed || Number(lastUsed) + 86400000 < Date.now()) {
+          speakOut = true;
+        } else {
+          speakOut = false;
+        }
+        if (selectedLocale === 'hi-IN') {
+          speakText =
+            "आपका स्वागत है, अब अपने ज़िले में CoVid19 के पुष्ट मामलों की संख्या खोजने के लिए ज़िले का नाम बोले जैसे की 'मुंबई'";
+        } else {
+          speakText =
+            "Welcome. Now search for confirmed CoVid19 cases in your district by saying the district name, like 'Mumbai'";
+        }
+        Slang.startConversation(speakText, speakOut);
+        localStorage.setItem('SlangLastUsed', Date.now());
+      },
+    });
   },
   onFailure: () => {
     console.log('Slang Failed to initialize'); // anything you want to do once slang fails to init
@@ -4168,6 +4189,7 @@ const replyValues = ({
       } else {
         return "We couldn't find data for your query.";
       }
+
     default:
       return false;
   }
@@ -4208,6 +4230,10 @@ function SlangInterface(props) {
         return item.state.trim().toLowerCase() === stateQuery;
       });
 
+    console.log('dataTypeQuery = ' + dataTypeQuery);
+    console.log('stateQuery = ' + stateQuery);
+    console.log(theNumber);
+    console.log('theNumber[state] = ' + theNumber[dataTypeQuery]);
     if (dataTypeQuery && stateQuery && theNumber && theNumber[dataTypeQuery]) {
       props.onHighlightState(theNumber, index);
       window.location.hash = '#MapStats';
