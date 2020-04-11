@@ -9,7 +9,7 @@ import ReactGA from 'react-ga';
 
 let theDistricts = [];
 let selectedLocale = localStorage.getItem('slangLocale') || 'en-IN';
-const env = 'prod';
+const env = 'stage';
 
 ReactGA.initialize('UA-123830474-3');
 // set the default selectable locales on the slang trigger
@@ -228,6 +228,7 @@ function SlangInterface(props) {
       });
     });
     Slang.setIntentActionHandler((intent) => {
+      console.log(intent);
       switch (intent.name) {
         case 'reply_with_districts':
           replyWithDistricts(intent);
