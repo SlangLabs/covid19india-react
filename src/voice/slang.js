@@ -26,7 +26,7 @@ Slang.initialize({
     console.log('Slang initialized successfully'); // anything you want to do once slang gets init successfully
     Slang.builtinUi.setConfig({
       overridenOnTriggerClick: async () => {
-        const lastUsed = localStorage.getItem('SlangLastUsed');
+        const lastUsed = localStorage.getItem('SlangLastUsed' + selectedLocale);
         if (!lastUsed || Number(lastUsed) + 86400000 < Date.now()) {
           speakOut = true;
         } else {
@@ -34,13 +34,13 @@ Slang.initialize({
         }
         if (selectedLocale === 'hi-IN') {
           speakText =
-            "आपका स्वागत है, अब अपने ज़िले में CoVid19 के पुष्ट मामलों की संख्या खोजने के लिए ज़िले का नाम बोले जैसे की 'मुंबई'";
+            "आपका स्वागत है. अब अपने ज़िले में CoVid19 के पुष्ट मामलों की संख्या खोजने के लिए ज़िले का नाम बोले, जैसे की 'मुंबई'";
         } else {
           speakText =
             "Welcome. Now search for confirmed CoVid19 cases in your district by saying the district name, like 'Mumbai'";
         }
         Slang.startConversation(speakText, speakOut);
-        localStorage.setItem('SlangLastUsed', Date.now());
+        localStorage.setItem('SlangLastUsed' + selectedLocale, Date.now());
       },
     });
   },
