@@ -55,11 +55,15 @@ const hints = {
     'active',
     'recovered',
     'deceased',
+    'cases',
     'confirmed',
     'active cases',
     'recovered cases',
     'deceased cases',
     'confirmed cases',
+    'death',
+    'died',
+    'India',
     'Adilabad',
     'Telangana',
     'Agar Malwa',
@@ -2090,6 +2094,11 @@ const hints = {
     'recovered',
     'deceased',
     'confirmed',
+    'cases',
+    'dead',
+    'death',
+    'died',
+    'India',
     'active cases',
     'recovered cases',
     'deceased cases',
@@ -4146,10 +4155,23 @@ const replyValues = ({
   dataTypeQuery,
   districtQuery,
   stateQuery,
+  orderQuery,
   number,
 }) => {
   console.log(caseFor, dataTypeQuery, districtQuery, stateQuery, number);
   switch (caseFor) {
+    case 'replyWithOrder':
+      return (
+        'The state with the ' +
+        orderQuery +
+        ' ' +
+        dataTypeQuery +
+        ' cases in India is ' +
+        stateQuery +
+        ' with ' +
+        number +
+        ' cases'
+      );
     case 'replyWithDistricts':
       if (selectedLocale === 'hi-IN') {
         return districtQuery + ' में पुष्ट मामलो की संख्या ' + number + ' है ';
@@ -4303,6 +4325,106 @@ function SlangInterface(props) {
     window.location.hash = '#_';
   };
 
+  const replyWithCountry = (intent) => {
+    index = district = state = undefined;
+
+    let stateQuery = 'total';
+    const countryQuery = intent.getEntity('country').isResolved
+      ? intent.getEntity('country').value.trim()
+      : 'India';
+    const orderQuery =
+      intent.getEntity('order').isResolved &&
+      intent.getEntity('order').value.trim().toLowerCase();
+    const dataTypeQuery = intent.getEntity('data_type').isResolved
+      ? intent.getEntity('data_type').value.trim().toLowerCase()
+      : 'confirmed';
+
+    console.log('countryQuery = ' + countryQuery);
+    if (countryQuery !== 'India') {
+      Slang.startConversation('We curently support data only for India', true);
+    } else if (orderQuery) {
+      console.log('orderQuery = ' + orderQuery);
+      console.log('dataTypeQuery = ' + dataTypeQuery);
+      let highestState = states[1].state;
+      let highestValue = parseInt(states[1][dataTypeQuery]);
+      let lowestState = states[1].state;
+      let lowestValue = parseInt(states[1][dataTypeQuery]);
+
+      states.forEach((item, i) => {
+        if (item.state === 'Total') return;
+
+        if (parseInt(item[dataTypeQuery]) > highestValue) {
+          highestValue = parseInt(item[dataTypeQuery]);
+          highestState = item.state.trim().toLowerCase();
+        }
+        if (parseInt(item[dataTypeQuery]) < lowestValue) {
+          lowestValue = parseInt(item[dataTypeQuery]);
+          lowestState = item.state.trim().toLowerCase();
+        }
+      });
+
+      let numberQuery;
+
+      if (orderQuery === 'highest') {
+        stateQuery = highestState;
+        numberQuery = highestValue;
+      } else {
+        stateQuery = lowestState;
+        numberQuery = lowestValue;
+      }
+
+      // props.onHighlightState(theNumber, index);
+      window.location.hash = '#MapStats';
+      const prompt = replyValues({
+        caseFor: 'replyWithOrder',
+        dataTypeQuery,
+        stateQuery,
+        orderQuery: orderQuery,
+        number: numberQuery,
+      });
+      Slang.startConversation(prompt, true);
+    } else {
+      console.log('India query = ' + dataTypeQuery);
+      const theNumber =
+        stateQuery &&
+        states.find((item, i) => {
+          index = i;
+          return item.state.trim().toLowerCase() === stateQuery;
+        });
+
+      console.log('dataTypeQuery = ' + dataTypeQuery);
+      console.log('stateQuery = ' + stateQuery);
+      console.log(theNumber);
+      console.log('theNumber[state] = ' + theNumber[dataTypeQuery]);
+
+      if (
+        dataTypeQuery &&
+        stateQuery &&
+        theNumber &&
+        theNumber[dataTypeQuery]
+      ) {
+        props.onHighlightState(theNumber, index);
+        window.location.hash = '#MapStats';
+        const prompt = replyValues({
+          caseFor: 'replyWithStates',
+          dataTypeQuery,
+          stateQuery: 'India',
+          number: theNumber[dataTypeQuery],
+        });
+        Slang.startConversation(prompt, true);
+      } else {
+        const prompt = replyValues({
+          caseFor: 'noDataState',
+        });
+
+        Slang.startConversation(prompt, true);
+      }
+    }
+
+    window.location.hash = '#_';
+    index = district = state = undefined;
+  };
+
   try {
     Slang.setOnUtteranceDetected((string) => {
       console.log('utterance - ' + string);
@@ -4320,6 +4442,10 @@ function SlangInterface(props) {
 
         case 'reply_with_states':
           replyWithStates(intent);
+          return true;
+
+        case 'reply_with_country':
+          replyWithCountry(intent);
           return true;
 
         default:
