@@ -4192,7 +4192,7 @@ const replyValues = ({
         (newQuery ? 'New confirmed' : 'Confirmed') +
         'cases in ' +
         districtQuery +
-        ' is ' +
+        ' are ' +
         number
       );
     case 'replyWithStates':
@@ -4243,7 +4243,7 @@ const replyValues = ({
         dataTypeQuery +
         ' cases in ' +
         stateQuery +
-        ' is ' +
+        ' are ' +
         number
       );
     case 'noDataDistrict':
