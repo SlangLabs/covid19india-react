@@ -56,6 +56,8 @@ const hints = {
     'recovered',
     'deceased',
     'cases',
+    'new',
+    'so far',
     'confirmed',
     'active cases',
     'recovered cases',
@@ -2094,6 +2096,8 @@ const hints = {
     'recovered',
     'deceased',
     'confirmed',
+    'so far',
+    'new',
     'cases',
     'dead',
     'death',
@@ -4156,6 +4160,7 @@ const replyValues = ({
   districtQuery,
   stateQuery,
   orderQuery,
+  newQuery,
   number,
 }) => {
   console.log(caseFor, dataTypeQuery, districtQuery, stateQuery, number);
@@ -4174,31 +4179,73 @@ const replyValues = ({
       );
     case 'replyWithDistricts':
       if (selectedLocale === 'hi-IN') {
-        return districtQuery + ' में पुष्ट मामलो की संख्या ' + number + ' है ';
+        return (
+          districtQuery +
+          ' में ' +
+          (newQuery ? 'नया ' : '') +
+          'पुष्ट मामलो की संख्या ' +
+          number +
+          ' है '
+        );
       }
-      return 'Confirmed cases in ' + districtQuery + ' is ' + number;
+      return (
+        (newQuery ? 'New confirmed' : 'Confirmed') +
+        'cases in ' +
+        districtQuery +
+        ' is ' +
+        number
+      );
     case 'replyWithStates':
       if (selectedLocale === 'hi-IN') {
         switch (dataTypeQuery) {
           case 'active':
-            return stateQuery + ' मैं ऐक्टिव कसेस की संख्या ' + number + ' है ';
+            return (
+              stateQuery +
+              ' मैं ' +
+              (newQuery ? 'नया ' : '') +
+              'ऐक्टिव कसेस की संख्या ' +
+              number +
+              ' है '
+            );
           case 'confirmed':
-            return stateQuery + ' में पुष्ट मामलो की संख्या ' + number + ' है ';
+            return (
+              stateQuery +
+              ' में ' +
+              (newQuery ? 'नया ' : '') +
+              'पुष्ट मामलो की संख्या ' +
+              number +
+              ' है '
+            );
           case 'recovered':
             return (
               stateQuery +
-              ' में स्वस्थ होनेवाले मामलों की संख्या ' +
+              ' में ' +
+              (newQuery ? 'नय ा' : '') +
+              'स्वस्थ होनेवाले मामलों की संख्या ' +
               number +
               ' है '
             );
           case 'deceased':
-            return stateQuery + ' में ' + number + ' लोगो की मौत हो चुकी हैं ';
+            return (
+              stateQuery +
+              ' में ' +
+              number +
+              (newQuery ? ' नए' : '') +
+              ' लोगो की मौत हो चुकी हैं '
+            );
           default:
             console.log('data type not found');
             break;
         }
       }
-      return dataTypeQuery + ' cases in ' + stateQuery + ' is ' + number;
+      return (
+        (newQuery ? 'New ' : '') +
+        dataTypeQuery +
+        ' cases in ' +
+        stateQuery +
+        ' is ' +
+        number
+      );
     case 'noDataDistrict':
       if (selectedLocale === 'hi-IN') {
         return 'माफ़ करिये ।अभी हमारे पास ज़िला स्तर पर ख़ाली पुष्ट मामलों की संख्या है';
@@ -4235,6 +4282,52 @@ function SlangInterface(props) {
   let district;
   let state;
 
+  /* Data looks like this
+  {
+			"active": "7780",
+			"confirmed": "9166",
+			"deaths": "325",
+			"deltaconfirmed": "714",
+			"deltadeaths": "36",
+			"deltarecovered": "89",
+			"lastupdatedtime": "12/04/2020 21:00:24",
+			"recovered": "1061",
+			"state": "Total",
+			"statecode": "TT"
+		},
+  */
+  const numberFromState = (state, dataTypeQuery, newQuery) => {
+    console.log('state = ');
+    console.log(state);
+    if (!newQuery) {
+      return parseInt(state[dataTypeQuery]);
+    } else if (dataTypeQuery === 'active') {
+      return null; // no deltaactive
+    } else {
+      return parseInt(state['delta' + dataTypeQuery]);
+    }
+  };
+
+  /*
+    Data looks like this =
+      {
+        "confirmed": 13,
+        "lastupdatedtime": "",
+        "delta": {
+          "confirmed": 0
+        }
+      }
+  */
+  const numberFromDistrict = (district, dataTypeQuery, newQuery) => {
+    console.log('distict = ');
+    console.log(district);
+    if (dataTypeQuery !== 'confirmed') {
+      return null;
+    } else {
+      return parseInt(newQuery ? district.delta.confirmed : district.confirmed);
+    }
+  };
+
   const replyWithStates = (intent) => {
     index = district = state = undefined;
 
@@ -4244,6 +4337,9 @@ function SlangInterface(props) {
     const dataTypeQuery = intent.getEntity('data_type').isResolved
       ? intent.getEntity('data_type').value.trim().toLowerCase()
       : 'confirmed';
+    const newQuery =
+      intent.getEntity('new_type').isResolved &&
+      intent.getEntity('new_type').value.trim().toLowerCase();
 
     const theNumber =
       stateQuery &&
@@ -4253,17 +4349,26 @@ function SlangInterface(props) {
       });
 
     console.log('dataTypeQuery = ' + dataTypeQuery);
+    console.log('newQuery = ' + newQuery);
     console.log('stateQuery = ' + stateQuery);
-    console.log(theNumber);
-    console.log('theNumber[state] = ' + theNumber[dataTypeQuery]);
-    if (dataTypeQuery && stateQuery && theNumber && theNumber[dataTypeQuery]) {
+    console.log(
+      'theNumber[state] = ' +
+        numberFromState(theNumber, dataTypeQuery, newQuery)
+    );
+    if (
+      dataTypeQuery &&
+      stateQuery &&
+      theNumber &&
+      numberFromState(theNumber, dataTypeQuery, newQuery)
+    ) {
       props.onHighlightState(theNumber, index);
       window.location.hash = '#MapStats';
       const prompt = replyValues({
         caseFor: 'replyWithStates',
         dataTypeQuery,
         stateQuery,
-        number: theNumber[dataTypeQuery],
+        newQuery,
+        number: numberFromState(theNumber, dataTypeQuery, newQuery),
       });
       Slang.startConversation(prompt, true);
     } else {
@@ -4286,6 +4391,10 @@ function SlangInterface(props) {
     const dataTypeQuery =
       intent.getEntity('data_type').isResolved &&
       intent.getEntity('data_type').value.trim().toLowerCase();
+    const newQuery =
+      intent.getEntity('new_type').isResolved &&
+      intent.getEntity('new_type').value.trim().toLowerCase();
+
     if (dataTypeQuery && dataTypeQuery !== 'confirmed') {
       const prompt = replyValues({
         caseFor: 'noDataDistrict',
@@ -4293,6 +4402,7 @@ function SlangInterface(props) {
 
       Slang.startConversation(prompt, true);
     } else {
+      console.log('confirmed district');
       const theNumberDistrictConfirmed =
         districtQuery &&
         theDistricts.reduce((acc, item) => {
@@ -4300,10 +4410,11 @@ function SlangInterface(props) {
             index = item.state;
             district = item.name;
             state = item;
-            return item.confirmed;
+            return numberFromDistrict(item, 'confirmed', newQuery);
           }
           return acc;
         }, '');
+      console.log(theNumberDistrictConfirmed);
       if (theNumberDistrictConfirmed) {
         window.location.hash = '#MapStats';
         index = states.findIndex((x) => x.state === index);
@@ -4311,6 +4422,7 @@ function SlangInterface(props) {
         const prompt = replyValues({
           caseFor: 'replyWithDistricts',
           districtQuery,
+          newQuery,
           number: theNumberDistrictConfirmed,
         });
 
@@ -4338,6 +4450,9 @@ function SlangInterface(props) {
     const dataTypeQuery = intent.getEntity('data_type').isResolved
       ? intent.getEntity('data_type').value.trim().toLowerCase()
       : 'confirmed';
+    const newQuery =
+      intent.getEntity('new_type').isResolved &&
+      intent.getEntity('new_type').value.trim().toLowerCase();
 
     console.log('countryQuery = ' + countryQuery);
     if (countryQuery !== 'India') {
@@ -4346,19 +4461,19 @@ function SlangInterface(props) {
       console.log('orderQuery = ' + orderQuery);
       console.log('dataTypeQuery = ' + dataTypeQuery);
       let highestState = states[1].state;
-      let highestValue = parseInt(states[1][dataTypeQuery]);
+      let highestValue = numberFromState(states[1], dataTypeQuery, newQuery);
       let lowestState = states[1].state;
-      let lowestValue = parseInt(states[1][dataTypeQuery]);
+      let lowestValue = numberFromState(states[1], dataTypeQuery, newQuery);
 
       states.forEach((item, i) => {
         if (item.state === 'Total') return;
 
         if (parseInt(item[dataTypeQuery]) > highestValue) {
-          highestValue = parseInt(item[dataTypeQuery]);
+          highestValue = numberFromState(item, dataTypeQuery, newQuery);
           highestState = item.state.trim().toLowerCase();
         }
         if (parseInt(item[dataTypeQuery]) < lowestValue) {
-          lowestValue = parseInt(item[dataTypeQuery]);
+          lowestValue = numberFromState(item, dataTypeQuery, newQuery);
           lowestState = item.state.trim().toLowerCase();
         }
       });
@@ -4380,6 +4495,7 @@ function SlangInterface(props) {
         dataTypeQuery,
         stateQuery,
         orderQuery: orderQuery,
+        newQuery,
         number: numberQuery,
       });
       Slang.startConversation(prompt, true);
@@ -4395,13 +4511,16 @@ function SlangInterface(props) {
       console.log('dataTypeQuery = ' + dataTypeQuery);
       console.log('stateQuery = ' + stateQuery);
       console.log(theNumber);
-      console.log('theNumber[state] = ' + theNumber[dataTypeQuery]);
+      console.log(
+        'theNumber[state] = ' +
+          numberFromState(theNumber, dataTypeQuery, newQuery)
+      );
 
       if (
         dataTypeQuery &&
         stateQuery &&
         theNumber &&
-        theNumber[dataTypeQuery]
+        numberFromState(theNumber, dataTypeQuery, newQuery)
       ) {
         props.onHighlightState(theNumber, index);
         window.location.hash = '#MapStats';
@@ -4409,7 +4528,8 @@ function SlangInterface(props) {
           caseFor: 'replyWithStates',
           dataTypeQuery,
           stateQuery: 'India',
-          number: theNumber[dataTypeQuery],
+          newQuery,
+          number: numberFromState(theNumber, dataTypeQuery, newQuery),
         });
         Slang.startConversation(prompt, true);
       } else {
