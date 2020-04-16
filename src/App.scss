@@ -896,7 +896,7 @@ h6 {
   }
 
   h4 {
-    margin-bottom: -0.5rem;
+    margin-bottom: 0.5rem;
   }
 
   .is-cherry {
@@ -2004,7 +2004,7 @@ footer {
   align-self: center;
   margin-left: auto;
   margin-right: auto;
-  width: 30rem;
+  // width: 30rem;
 
 
   .reminder {
@@ -2933,6 +2933,7 @@ select {
     }
   }
 }
+}
 
 @media(max-width: 400px){
   .PatientsDB .modal .modal-content .meta {
@@ -3035,6 +3036,26 @@ select {
       align-self: center;
     }
   }
+}
+
+.ShareButtons {
+  a {
+    margin-right: 1rem;
+  }
+}
+
+.TopNumbers {
+  max-width: 65rem;
+  margin: 1rem auto;
+
+}
+
+@media (max-width: 1119px) {
+  .TopNumbers {
+    max-width: 35rem;
+    margin: 1rem auto;
+  }
+
 }
 
 @media (max-width: 769px) {
@@ -3702,7 +3723,7 @@ select {
   }
 
   .mobile-disclaimer-button {
-    background-color: #ffffff;
+    background-color: #fff;
     color: #808080;
     font-size: xx-small;
     justify-content: center;

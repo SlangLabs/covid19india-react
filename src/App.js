@@ -15,6 +15,7 @@ import FAQ from './components/faq';
 import PatientDB from './components/patientdb';
 import DeepDive from './components/deepdive';
 import Resources from './components/resources';
+import ShareButtons from './components/shareButtons';
 /* import PatientDB from './components/patientdb';*/
 
 const history = require('history').createBrowserHistory;
@@ -107,6 +108,7 @@ function App() {
           alt="https://www.covid19india.org | Coronavirus cases live dashboard"
         /> 
         <Banner /> */}
+        <ShareButtons />
         <h5>We stand with everyone fighting on the frontlines</h5>
         <div className="link">
           <a

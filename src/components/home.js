@@ -16,14 +16,14 @@ import Level from './level';
 import MapExplorer from './mapexplorer';
 import TimeSeries from './timeseries';
 import Minigraph from './minigraph';
-import Patients from './patients';
+// import Patients from './patients';
 import SlangInterface from '../voice/slang';
 
 function Home(props) {
   const [states, setStates] = useState([]);
   const [stateDistrictWiseData, setStateDistrictWiseData] = useState({});
   const [stateTestData, setStateTestData] = useState({});
-  const [patients, setPatients] = useState([]);
+  // const [patients, setPatients] = useState([]);
   const [fetched, setFetched] = useState(false);
   const [graphOption, setGraphOption] = useState(2);
   const [lastUpdated, setLastUpdated] = useState('');
@@ -92,7 +92,7 @@ function Home(props) {
 
   return (
     <React.Fragment>
-      <div className="Home">
+      <div className="TopNumbers">
         <div className="header fadeInUp" style={{animationDelay: '1s'}}>
           <div className="header-mid">
             <div className="titles">
@@ -116,38 +116,12 @@ function Home(props) {
               </h6>
             </div>
           </div>
-        </div>
-        <div className="home-left">
           {states.length > 1 && <Level data={states} />}
           {fetched && <Minigraph timeseries={timeseries['TT']} />}
-          {fetched && (
-            <Table
-              forwardRef={refs[0]}
-              states={states}
-              summary={false}
-              stateDistrictWiseData={stateDistrictWiseData}
-              onHighlightState={onHighlightState}
-              onHighlightDistrict={onHighlightDistrict}
-            />
-          )}
-
-          {patients.length > 1 && (
-            <div className="patients-summary">
-              <h1>Latest Cases</h1>
-              <h6>A summary of the latest reported cases</h6>
-              <div className="patients-wrapper">
-                <Patients patients={patients} summary={true} />
-              </div>
-              <button className="button">
-                <Link to="/patients">
-                  <Icon.Database />
-                  <span>View the Patients Database</span>
-                </Link>
-              </button>
-            </div>
-          )}
         </div>
-        <div className="home-right">
+      </div>
+      <div className="Home">
+        <div className="home-left">
           {fetched && (
             <React.Fragment>
               <MapExplorer
@@ -252,7 +226,35 @@ function Home(props) {
             </React.Fragment>
           )}
         </div>
-        {/* <div className="floating-buttons">
+        <div className="home-right">
+          {fetched && (
+            <Table
+              forwardRef={refs[0]}
+              states={states}
+              summary={false}
+              stateDistrictWiseData={stateDistrictWiseData}
+              onHighlightState={onHighlightState}
+              onHighlightDistrict={onHighlightDistrict}
+            />
+          )}
+        </div>
+
+        {/* {patients.length > 1 && (
+            <div className="patients-summary">
+              <h1>Latest Cases</h1>
+              <h6>A summary of the latest reported cases</h6>
+              <div className="patients-wrapper">
+                <Patients patients={patients} summary={true} />
+              </div>
+              <button className="button">
+                <Link to="/patients">
+                  <Icon.Database />
+                  <span>View the Patients Database</span>
+                </Link>
+              </button>
+            </div>
+          )} 
+           <div className="floating-buttons">
           <button
             className="table-nav fadeInUp"
             onClick={scrollHandlers[0]}
@@ -334,7 +336,6 @@ function Home(props) {
         )}
       </div>
     */}
-        <div className="home-right"></div>
       </div>
 
       <div className="Home">

@@ -301,30 +301,30 @@ function Row(props) {
               <span className="table__count-text">
                 {formatNumber(sortedDistricts['Unknown'].confirmed)}
               </span>
+              <span
+                style={{
+                  display: props.reveal && !props.total ? '' : 'none',
+                  fontSize: '0.75rem',
+                  color: '#201aa299',
+                }}
+              >
+                #
+              </span>
+              <div
+                style={{
+                  display: props.reveal && !props.total ? '' : 'none',
+                  fontSize: '0.5rem',
+                  paddingLeft: '1rem',
+                  position: 'absolute',
+                  marginTop: '-0.85rem',
+                  color: '#201aa299',
+                  fontWeight: 600,
+                }}
+              >
+                Awaiting patient-level details from State Bulletin
+              </div>
             </td>
           </tr>
-          <span
-            style={{
-              display: props.reveal && !props.total ? '' : 'none',
-              fontSize: '0.75rem',
-              color: '#201aa299',
-            }}
-          >
-            #
-          </span>
-          <div
-            style={{
-              display: props.reveal && !props.total ? '' : 'none',
-              fontSize: '0.5rem',
-              paddingLeft: '1rem',
-              position: 'absolute',
-              marginTop: '-0.85rem',
-              color: '#201aa299',
-              fontWeight: 600,
-            }}
-          >
-            Awaiting patient-level details from State Bulletin
-          </div>
         </React.Fragment>
       )}
 

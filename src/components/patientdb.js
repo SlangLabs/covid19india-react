@@ -23,7 +23,6 @@ function PatientDB(props) {
   const [filteredPatients, setFilteredPatients] = useState([]);
   const [error, setError] = useState('');
   const {pathname} = useLocation();
-<<<<<<< HEAD
   const [colorMode, setColorMode] = useState('genders');
   const [scaleMode, setScaleMode] = useState(false);
   const [filters, setFilters] = useState({
@@ -32,14 +31,8 @@ function PatientDB(props) {
     detectedcity: '',
     dateannounced: format(subDays(new Date(), 1), 'dd/MM/yyyy'),
   });
-<<<<<<< HEAD
-=======
->>>>>>> Added latest cases on frontpage.
-
-=======
-  const [colorMode, setColorMode] = useState('genders');
   const {detectedstate, detecteddistrict, detectedcity} = filters;
->>>>>>> Add voice search for state and district in patients DB, UI changes and Removed NavBar
+
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [pathname]);
@@ -64,7 +57,6 @@ function PatientDB(props) {
   }, [fetched]);
 
   const handleFilters = (label, value) => {
-    console.log(label, value);
     setFilters((f) => {
       // Create new object (deep copy)
       const newFilters = {...f};
@@ -114,7 +106,6 @@ function PatientDB(props) {
             <select
               style={{animationDelay: '0.3s'}}
               id="state"
-              value={detectedstate}
               onChange={(event) => {
                 handleFilters('detectedstate', event.target.value);
               }}
@@ -333,10 +324,24 @@ function PatientDB(props) {
       </div>
 
       <div className="header fadeInUp" style={{animationDelay: '0.3s'}}>
-<<<<<<< HEAD
+        <div
+          style={{color: '#6c757d', cursor: 'pointer'}}
+          className="legend-left"
+          href="#"
+          onClick={() => {
+            window.history.go(-1);
+            return false;
+          }}
+        >
+          <h5>Back</h5>
+        </div>
         <div>
           <h1>Demographics</h1>
-          {/* <h3>No. of Patients: {patients.length}</h3>*/}
+          <h3>
+            {' '}
+            {detectedstate}{' '}
+            {detecteddistrict !== '' ? ` - ${detecteddistrict}` : ''}
+          </h3>
 
           <div className="deep-dive">
             <h5>Expand</h5>
@@ -367,28 +372,6 @@ function PatientDB(props) {
           <br />
           Among these are our people.
         </p>
-=======
-        <div
-          style={{color: '#6c757d', cursor: 'pointer'}}
-          className="legend-left"
-          href="#"
-          onClick={() => {
-            window.history.go(-1);
-            return false;
-          }}
-        >
-          <h5>Back</h5>
-        </div>
-        <br />
-
-        <h1>Patients Database</h1>
-        <h3>No. of Patients: {patients.length}</h3>
-        <h3>
-          {' '}
-          {detectedstate}{' '}
-          {detecteddistrict !== '' ? ` - ${detecteddistrict}` : ''}
-        </h3>
->>>>>>> Add voice search for state and district in patients DB, UI changes and Removed NavBar
       </div>
 
       <div className="patientdb-wrapper">
