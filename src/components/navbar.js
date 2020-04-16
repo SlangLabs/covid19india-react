@@ -1,7 +1,9 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {Link} from 'react-router-dom';
 
 function Navbar(props) {
+  const [menuVisible, setMenuVisible] = useState(false);
+
   // HTML Properties for each of the links in UI
   const navLinkProps = (path, animationDelay) => ({
     className: `fadeInUp ${window.location.pathname === path ? 'focused' : ''}`,
@@ -16,7 +18,6 @@ function Navbar(props) {
         className="Navbar"
         style={{
           animationDelay: '0.5s',
-          height: window.location.pathname === '/clusters' ? '2.5rem' : '',
           transition: 'all 0.3s ease-in-out',
         }}
       >
@@ -44,8 +45,18 @@ function Navbar(props) {
             );
           })}
         </div>
-
-        <div className="navbar-right"></div>
+        <div className="navbar-right">
+          <div
+            className="navbar-toggle"
+            onClick={() => {
+              setMenuVisible(!menuVisible);
+            }}
+          >
+            <div></div>
+            <div></div>
+            <div></div>
+          </div>
+        </div>
       </div>
     );
   } else {

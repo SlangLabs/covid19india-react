@@ -8,13 +8,15 @@ import {
 import * as Icon from 'react-feather';
 
 import './App.scss';
-
 import Home from './components/home';
 // import Navbar from './components/navbar';
 import Links from './components/links';
 import FAQ from './components/faq';
-// import Banner from './components/banner';
 import PatientDB from './components/patientdb';
+import DeepDive from './components/deepdive';
+import Resources from './components/resources';
+import ShareButtons from './components/shareButtons';
+/* import PatientDB from './components/patientdb';*/
 
 const history = require('history').createBrowserHistory;
 
@@ -27,22 +29,34 @@ function App() {
       animationDelayForNavbar: 0.2,
     },
     {
-      pageLink: '/database',
+      pageLink: '/demographics',
       view: PatientDB,
-      displayName: 'Patients DB',
+      displayName: 'Demographics',
       animationDelayForNavbar: 0.3,
+    },
+    {
+      pageLink: '/deepdive',
+      view: DeepDive,
+      displayName: 'Deep Dive',
+      animationDelayForNavbar: 0.4,
     },
     {
       pageLink: '/links',
       view: Links,
       displayName: 'Helpful Links',
-      animationDelayForNavbar: 0.5,
+      animationDelayForNavbar: 0.4,
     },
     {
       pageLink: '/faq',
       view: FAQ,
-      displayName: 'FAQ',
-      animationDelayForNavbar: 0.6,
+      displayName: 'About',
+      animationDelayForNavbar: 0.5,
+    },
+    {
+      pageLink: '/essentials',
+      view: Resources,
+      displayName: 'Essentials',
+      animationDelayForNavbar: 0.7,
     },
   ];
 
@@ -94,6 +108,7 @@ function App() {
           alt="https://www.covid19india.org | Coronavirus cases live dashboard"
         /> 
         <Banner /> */}
+        <ShareButtons />
         <h5>We stand with everyone fighting on the frontlines</h5>
         <div className="link">
           <a
