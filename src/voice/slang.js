@@ -92,14 +92,14 @@ const replyValues = ({
           districtQuery +
           ' में ' +
           (newQuery ? 'नया ' : '') +
-          'पुष्ट मामलो की संख्या ' +
+          ' पुष्ट मामलो की संख्या ' +
           number +
           ' है '
         );
       }
       return (
         (newQuery ? 'New confirmed' : 'Confirmed') +
-        'cases in ' +
+        ' cases in ' +
         districtQuery +
         ' are ' +
         number
@@ -112,7 +112,7 @@ const replyValues = ({
               stateQuery +
               ' मैं ' +
               (newQuery ? 'नया ' : '') +
-              'ऐक्टिव कसेस की संख्या ' +
+              ' ऐक्टिव कसेस की संख्या ' +
               number +
               ' है '
             );
@@ -121,7 +121,7 @@ const replyValues = ({
               stateQuery +
               ' में ' +
               (newQuery ? 'नया ' : '') +
-              'पुष्ट मामलो की संख्या ' +
+              ' पुष्ट मामलो की संख्या ' +
               number +
               ' है '
             );
@@ -130,7 +130,7 @@ const replyValues = ({
               stateQuery +
               ' में ' +
               (newQuery ? 'नय ा' : '') +
-              'स्वस्थ होनेवाले मामलों की संख्या ' +
+              ' स्वस्थ होनेवाले मामलों की संख्या ' +
               number +
               ' है '
             );

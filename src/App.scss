@@ -651,6 +651,11 @@ h6 {
     padding: 0.7rem;
     text-align: center;
     cursor: pointer;
+    img {
+      margin-top: 0.5rem;
+      width: 2rem;
+      height: 2rem;
+    }
   }
 }
 
@@ -3062,7 +3067,6 @@ select {
   .TimeSeries,
   table,
   .header,
-  .Level,
   .timeseries-header,
   .TimeSeries-Parent,
   .Links,
@@ -3214,24 +3218,17 @@ select {
     }
   }
 
-  .MiniBanner {
-    height: 3rem;
-
-    .snippet {
-      width: 100%;
-      margin-left: 1rem;
-      margin-right: 1rem;
-    }
-  }
 
   .MiniBanner {
     line-height: 1.2rem;
-    font-family: 'Archia';
     font-size: 0.8rem;
-    height: 3rem;
+    min-height: 3rem;
     .snippet {
 
       padding: 1rem;
+      width: 100%;
+      margin-left: 1rem;
+      margin-right: 1rem;
    
     }
   }
@@ -3635,6 +3632,59 @@ select {
       margin-bottom: 0.1rem;
     }
   }
+
+  .map-stats {
+    height: 3.5rem !important;
+    overflow: scroll;
+    h1,
+    h5,
+    h6,
+    h3 {
+      font-size: 0.5rem !important;
+    }
+
+
+    .stats {
+
+      h1 {
+        font-weight: 600;
+        font-size: 1rem !important;
+      }
+
+      
+    }
+  }
+
+  h1 {
+      font-size: 1.1rem !important;
+    }
+
+table {
+  tbody{
+    tr{
+      td {
+          margin-left: 0.15rem;
+          font-size: 0.7rem;
+          .table__title-wrapper, .table__count-text, .deltas {
+            margin-left: 0.15rem;
+            font-size: 0.7rem;
+          }
+
+      }
+    }
+  
+  }
+}
+
+.Level {
+  max-width: calc(100%);
+}
+
+.Minigraph {
+  .svg-parent {
+    height: 5rem;
+  }
+}
 
 }
 

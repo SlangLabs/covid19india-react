@@ -81,6 +81,8 @@ function App() {
                     covid19india.org
                   </a>{' '}
                   for the original code and data
+                  <br />
+                  <ShareButtons />
                 </div>
               </div>
               <Route exact path="/" render={() => <Redirect to="/" />} />
