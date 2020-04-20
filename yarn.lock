@@ -11283,10 +11283,8 @@ sisteransi@^1.0.4:
   resolved "https://registry.yarnpkg.com/sisteransi/-/sisteransi-1.0.5.tgz#134d681297756437cc05ca01370d3a7a571075ed"
   integrity sha512-bLGGlR1QxBcynn2d5YmDX4MGjlZvy2MRBDRNHLJ8VI6l6+9FUiyTFNJ0IveOSP0bcXgVDPRcfGqA0pjaqUpfVg==
 
-slang-web-sdk@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/slang-web-sdk/-/slang-web-sdk-1.0.0.tgz#8ee948e11f76a12861fbe113f640dd467f011fcc"
-  integrity sha512-u9V0K3EGmrYLlOB8E4MC4QXMAyD6L/F+uyN/FmcNaHRdDf/fyVIzRztFL6vhF/F/KiPeB7b39voJ9Jw95D2/hA==
+"slang-web-sdk-local@file:./private/slang-web-sdk-local":
+  version "1.0.2"
 
 slash@^1.0.0:
   version "1.0.0"

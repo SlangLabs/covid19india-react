@@ -2,7 +2,7 @@
  * This code integrates voice queires to the dashboard with Slang.
  */
 
-import Slang from 'slang-web-sdk';
+import Slang from 'slang-web-sdk-local';
 import {buddyId, apiKey} from './buddy.js';
 import {hints} from './buddyHelper';
 import './slang.css';
