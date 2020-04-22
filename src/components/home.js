@@ -221,6 +221,7 @@ function Home(props) {
                 states={states}
                 onHighlightState={onHighlightState}
                 stateDistrictWiseData={stateDistrictWiseData}
+                stateTestData={stateTestData}
                 onHighlightDistrict={onHighlightDistrict}
               />
             </React.Fragment>

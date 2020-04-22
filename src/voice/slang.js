@@ -3,178 +3,23 @@
  */
 
 import Slang from 'slang-web-sdk-local';
-import {buddyId, apiKey} from './buddy.js';
-import {hints} from './buddyHelper';
-import './slang.css';
 import ReactGA from 'react-ga';
-
-let theDistricts = [];
-let selectedLocale = localStorage.getItem('slangLocale') || 'en-IN';
-const env = 'stage';
-let speakOut = false;
-let speakText = '';
+import {replyValues} from './slangInit';
 
 ReactGA.initialize('UA-123830474-3');
-// set the default selectable locales on the slang trigger
-Slang.requestLocales(['en-IN', 'hi-IN']);
-// Initialise Slang with the below params
-Slang.initialize({
-  buddyId,
-  apiKey,
-  env, // one of ['stage','prod']
-  locale: selectedLocale, // one of ['en-IN','hi-IN']
-  onSuccess: () => {
-    console.log('Slang initialized successfully'); // anything you want to do once slang gets init successfully
-    Slang.builtinUi.setConfig({
-      overridenOnTriggerClick: async () => {
-        const lastUsed = localStorage.getItem('SlangLastUsed' + selectedLocale);
-        if (!lastUsed || Number(lastUsed) + 86400000 < Date.now()) {
-          speakOut = true;
-        } else {
-          speakOut = false;
-        }
-        if (selectedLocale === 'hi-IN') {
-          speakText =
-            "आपका स्वागत है. अब अपने ज़िले में CoVid19 के पुष्ट मामलों की संख्या खोजने के लिए ज़िले का नाम बोले, जैसे की 'मुंबई'";
-        } else {
-          speakText =
-            "Welcome. Now search for confirmed CoVid19 cases in your district by saying the district name, like 'Mumbai'";
-        }
-        Slang.startConversation(speakText, speakOut);
-        localStorage.setItem('SlangLastUsed' + selectedLocale, Date.now());
-      },
-    });
-  },
-  onFailure: () => {
-    console.log('Slang Failed to initialize'); // anything you want to do once slang fails to init
-  },
-});
+let theDistricts = [];
 
-// arrays of ASR biasing words for each locale
-
-// set the above hints
-Slang.setASRHints(hints);
-
-const uiObs = (UIState) => {
-  if (UIState.selectedLocale !== selectedLocale) {
-    selectedLocale = UIState.selectedLocale;
-    localStorage.setItem('slangLocale', selectedLocale);
-  }
-};
-Slang.registerUIObserver(uiObs);
-
-const replyValues = ({
-  caseFor,
-  dataTypeQuery,
-  districtQuery,
-  stateQuery,
-  orderQuery,
-  newQuery,
-  number,
-}) => {
-  console.log(caseFor, dataTypeQuery, districtQuery, stateQuery, number);
-  switch (caseFor) {
-    case 'replyWithOrder':
-      return (
-        'The state with the ' +
-        orderQuery +
-        ' ' +
-        dataTypeQuery +
-        ' cases in India is ' +
-        stateQuery +
-        ' with ' +
-        number +
-        ' cases'
-      );
-    case 'replyWithDistricts':
-      if (selectedLocale === 'hi-IN') {
-        return (
-          districtQuery +
-          ' में ' +
-          (newQuery ? 'नया ' : '') +
-          ' पुष्ट मामलो की संख्या ' +
-          number +
-          ' है '
-        );
-      }
-      return (
-        (newQuery ? 'New confirmed' : 'Confirmed') +
-        ' cases in ' +
-        districtQuery +
-        ' are ' +
-        number
-      );
-    case 'replyWithStates':
-      if (selectedLocale === 'hi-IN') {
-        switch (dataTypeQuery) {
-          case 'active':
-            return (
-              stateQuery +
-              ' मैं ' +
-              (newQuery ? 'नया ' : '') +
-              ' ऐक्टिव कसेस की संख्या ' +
-              number +
-              ' है '
-            );
-          case 'confirmed':
-            return (
-              stateQuery +
-              ' में ' +
-              (newQuery ? 'नया ' : '') +
-              ' पुष्ट मामलो की संख्या ' +
-              number +
-              ' है '
-            );
-          case 'recovered':
-            return (
-              stateQuery +
-              ' में ' +
-              (newQuery ? 'नय ा' : '') +
-              ' स्वस्थ होनेवाले मामलों की संख्या ' +
-              number +
-              ' है '
-            );
-          case 'deceased':
-            return (
-              stateQuery +
-              ' में ' +
-              number +
-              (newQuery ? ' नए' : '') +
-              ' लोगो की मौत हो चुकी हैं '
-            );
-          default:
-            console.log('data type not found');
-            break;
-        }
-      }
-      return (
-        (newQuery ? 'New ' : '') +
-        dataTypeQuery +
-        ' cases in ' +
-        stateQuery +
-        ' are ' +
-        number
-      );
-    case 'noDataDistrict':
-      if (selectedLocale === 'hi-IN') {
-        return 'माफ़ करिये ।अभी हमारे पास ज़िला स्तर पर ख़ाली पुष्ट मामलों की संख्या है';
-      } else {
-        return 'Sorry. Data is available only for confirmed cases currently at a district level';
-      }
-    case 'noDataState':
-      if (selectedLocale === 'hi-IN') {
-        return 'माफ़ करिये अभी हमारे पास इस का उत्तर नहीं है।';
-      } else {
-        return "We couldn't find data for your query.";
-      }
-
-    default:
-      return false;
+// enable or disable logging
+const debudOn = false;
+const debugLog = () => {
+  if (!debudOn) {
+    console.log = function () {};
   }
 };
 
 function SlangInterface(props) {
-  const {states, stateDistrictWiseData} = props;
+  const {states, stateDistrictWiseData, stateTestData} = props;
+  debugLog();
 
   theDistricts = Object.keys(stateDistrictWiseData).reduce((acc, state) => {
     const dist = Object.keys(stateDistrictWiseData[state]['districtData'])
@@ -206,24 +51,39 @@ function SlangInterface(props) {
 		},
   */
   const numberFromState = (state, dataTypeQuery, newQuery) => {
-    console.log('state = ');
-    console.log(state);
+    console.log('state = ', state, 'type = ', dataTypeQuery);
     if (!newQuery) {
-      return parseInt(state[dataTypeQuery]);
+      return {
+        value: parseInt(state[dataTypeQuery]),
+        lastupdatedtime: state.lastupdatedtime,
+      };
     } else if (dataTypeQuery === 'active') {
-      return null; // no deltaactive
+      // since new active and new confirmed are the same
+      return {
+        value: parseInt(state['deltaconfirmed']),
+        lastupdatedtime: state.lastupdatedtime,
+      };
     } else {
-      return parseInt(state['delta' + dataTypeQuery]);
+      return {
+        value: parseInt(state['delta' + dataTypeQuery]),
+        lastupdatedtime: state.lastupdatedtime,
+      };
     }
   };
 
   /*
     Data looks like this =
       {
-        "confirmed": 13,
-        "lastupdatedtime": "",
-        "delta": {
-          "confirmed": 0
+        name: "Bengaluru"
+        state: "Karnataka"
+        active: 100
+        confirmed: 100
+        deceased: 0
+        recovered: 0
+        delta: {
+          confirmed: 0,
+          deceased: 0,
+          recovered: 0
         }
       }
   */
@@ -237,6 +97,27 @@ function SlangInterface(props) {
     }
   };
 
+  const numberTestedFromState = (stateName) => {
+    const stateTested = stateTestData.find(
+      (obj) =>
+        obj.state.toLowerCase() === stateName.toLowerCase() &&
+        obj.totaltested !== ''
+    );
+
+    return stateTested ? stateTested.totaltested : 0;
+  };
+
+  const allIndiaTested = () => {
+    const testedIndia = states.reduce((acc, cur) => {
+      let newStateTested = 0;
+      if (cur.state !== 'Total')
+        newStateTested = numberTestedFromState(cur.state);
+
+      return acc + parseInt(newStateTested, 10);
+    }, 0);
+    return testedIndia;
+  };
+  // console.log(allIndiaTested());
   const replyWithStates = (intent) => {
     index = district = state = undefined;
 
@@ -250,34 +131,47 @@ function SlangInterface(props) {
       intent.getEntity('new_type').isResolved &&
       intent.getEntity('new_type').value.trim().toLowerCase();
 
-    const theNumber =
+    const theStateData =
       stateQuery &&
       states.find((item, i) => {
         index = i;
         return item.state.trim().toLowerCase() === stateQuery;
       });
-
+    const stateInfo = numberFromState(theStateData, dataTypeQuery, newQuery);
+    const numberForState = stateInfo.value;
+    const updatedState = stateInfo.lastupdatedtime;
+    const numberTestedState = numberTestedFromState(stateQuery);
     console.log('dataTypeQuery = ' + dataTypeQuery);
     console.log('newQuery = ' + newQuery);
     console.log('stateQuery = ' + stateQuery);
-    console.log(
-      'theNumber[state] = ' +
-        numberFromState(theNumber, dataTypeQuery, newQuery)
-    );
+    console.log('theStateData[state] = ' + numberForState);
+    console.log('theStateData[state] = ' + numberTestedState);
     if (
-      dataTypeQuery &&
+      dataTypeQuery === 'tested' &&
       stateQuery &&
-      theNumber &&
-      numberFromState(theNumber, dataTypeQuery, newQuery)
+      theStateData &&
+      numberTestedState
     ) {
-      props.onHighlightState(theNumber, index);
+      props.onHighlightState(theStateData, index);
+      window.location.hash = '#MapStats';
+      const prompt = replyValues({
+        caseFor: 'replyWithStates',
+        dataTypeQuery,
+        stateQuery,
+        newQuery: false,
+        number: numberTestedState,
+      });
+      Slang.startConversation(prompt, true);
+    } else if (dataTypeQuery && stateQuery && theStateData) {
+      props.onHighlightState(theStateData, index);
       window.location.hash = '#MapStats';
       const prompt = replyValues({
         caseFor: 'replyWithStates',
         dataTypeQuery,
         stateQuery,
         newQuery,
-        number: numberFromState(theNumber, dataTypeQuery, newQuery),
+        number: numberForState,
+        lastUpdate: updatedState,
       });
       Slang.startConversation(prompt, true);
     } else {
@@ -292,6 +186,58 @@ function SlangInterface(props) {
     index = district = state = undefined;
   };
 
+  const replyWithNewDelhi = (intent) => {
+    index = district = state = undefined;
+    const districtQuery = 'new delhi';
+    const dataTypeQuery =
+      intent.getEntity('data_type').isResolved &&
+      intent.getEntity('data_type').value.trim().toLowerCase();
+    const newQuery = false;
+    // const newQuery =
+    //   intent.getEntity('new_type').isResolved &&
+    //   intent.getEntity('new_type').value.trim().toLowerCase();
+
+    if (dataTypeQuery && dataTypeQuery !== 'confirmed') {
+      const prompt = replyValues({
+        caseFor: 'noDataDistrict',
+      });
+
+      Slang.startConversation(prompt, true);
+    } else {
+      console.log('confirmed district');
+      const theNumberDistrictConfirmed =
+        districtQuery &&
+        theDistricts.reduce((acc, item) => {
+          if (item.name.trim().toLowerCase() === districtQuery) {
+            index = item.state;
+            district = item.name;
+            state = item;
+            return numberFromDistrict(item, 'confirmed', newQuery);
+          }
+          return acc;
+        }, '');
+      console.log(theNumberDistrictConfirmed);
+      if (theNumberDistrictConfirmed) {
+        window.location.hash = '#MapStats';
+        index = states.findIndex((x) => x.state === index);
+        props.onHighlightDistrict(district, state, index);
+        const prompt = replyValues({
+          caseFor: 'replyWithDistricts',
+          districtQuery,
+          newQuery,
+          number: theNumberDistrictConfirmed,
+        });
+
+        Slang.startConversation(prompt, true);
+      } else {
+        const prompt = replyValues({
+          caseFor: 'noDataState',
+        });
+        Slang.startConversation(prompt, true);
+      }
+    }
+    window.location.hash = '#_';
+  };
   const replyWithDistricts = (intent) => {
     index = district = state = undefined;
     const districtQuery =
@@ -370,19 +316,21 @@ function SlangInterface(props) {
       console.log('orderQuery = ' + orderQuery);
       console.log('dataTypeQuery = ' + dataTypeQuery);
       let highestState = states[1].state;
-      let highestValue = numberFromState(states[1], dataTypeQuery, newQuery);
+      let highestValue = numberFromState(states[1], dataTypeQuery, newQuery)
+        .value;
       let lowestState = states[1].state;
-      let lowestValue = numberFromState(states[1], dataTypeQuery, newQuery);
+      let lowestValue = numberFromState(states[1], dataTypeQuery, newQuery)
+        .value;
 
       states.forEach((item, i) => {
         if (item.state === 'Total') return;
 
         if (parseInt(item[dataTypeQuery]) > highestValue) {
-          highestValue = numberFromState(item, dataTypeQuery, newQuery);
+          highestValue = numberFromState(item, dataTypeQuery, newQuery).value;
           highestState = item.state.trim().toLowerCase();
         }
         if (parseInt(item[dataTypeQuery]) < lowestValue) {
-          lowestValue = numberFromState(item, dataTypeQuery, newQuery);
+          lowestValue = numberFromState(item, dataTypeQuery, newQuery).value;
           lowestState = item.state.trim().toLowerCase();
         }
       });
@@ -416,21 +364,25 @@ function SlangInterface(props) {
           index = i;
           return item.state.trim().toLowerCase() === stateQuery;
         });
-
+      const numberForIndia = numberFromState(theNumber, dataTypeQuery, newQuery)
+        .value;
+      const numberIndiaTested = allIndiaTested();
       console.log('dataTypeQuery = ' + dataTypeQuery);
       console.log('stateQuery = ' + stateQuery);
       console.log(theNumber);
-      console.log(
-        'theNumber[state] = ' +
-          numberFromState(theNumber, dataTypeQuery, newQuery)
-      );
+      console.log('theNumber[state] = ' + numberForIndia);
 
-      if (
-        dataTypeQuery &&
-        stateQuery &&
-        theNumber &&
-        numberFromState(theNumber, dataTypeQuery, newQuery)
-      ) {
+      if (dataTypeQuery === 'tested' && stateQuery && numberIndiaTested) {
+        window.location.hash = '#MapStats';
+        const prompt = replyValues({
+          caseFor: 'replyWithStates',
+          dataTypeQuery,
+          stateQuery: 'India',
+          newQuery,
+          number: numberIndiaTested,
+        });
+        Slang.startConversation(prompt, true);
+      } else if (dataTypeQuery && stateQuery && theNumber && numberForIndia) {
         props.onHighlightState(theNumber, index);
         window.location.hash = '#MapStats';
         const prompt = replyValues({
@@ -438,7 +390,7 @@ function SlangInterface(props) {
           dataTypeQuery,
           stateQuery: 'India',
           newQuery,
-          number: numberFromState(theNumber, dataTypeQuery, newQuery),
+          number: numberForIndia,
         });
         Slang.startConversation(prompt, true);
       } else {
@@ -464,22 +416,37 @@ function SlangInterface(props) {
     });
     Slang.setIntentActionHandler((intent) => {
       console.log(intent);
-      switch (intent.name) {
-        case 'reply_with_districts':
-          replyWithDistricts(intent);
-          return true;
+      const isNewDelhi = () => {
+        const utt = intent.userUtterance.toLowerCase();
+        console.log(utt.match(/new delhi/));
+        return utt.match(/new delhi/);
+      };
 
-        case 'reply_with_states':
-          replyWithStates(intent);
-          return true;
-
-        case 'reply_with_country':
+      if (intent.name === 'get_status') {
+        if (intent.getEntity('country').isResolved) {
           replyWithCountry(intent);
           return true;
+        }
+        if (intent.getEntity('state').isResolved) {
+          replyWithStates(intent);
+          return true;
+        }
+        if (intent.getEntity('district').isResolved) {
+          replyWithDistricts(intent);
+          return true;
+        }
+        if (isNewDelhi()) {
+          replyWithNewDelhi(intent);
+          return true;
+        }
+        const prompt = replyValues({
+          caseFor: 'noDataState',
+        });
 
-        default:
-          return false;
+        Slang.startConversation(prompt, true);
+        return false;
       }
+      return false;
     });
   } catch (error) {
     console.log(error);
@@ -495,9 +462,52 @@ export function SlangPatients(props) {
 
   try {
     // set the intent handle with slang to perform tasks when an intent from the user is detected.
+    // Slang.setIntentActionHandler((intent) => {
+    //   switch (intent.name) {
+    //     case 'reply_with_districts':
+    //       // read the district spoken by the user.
+    //       const districtQuery =
+    //         intent.getEntity('district').isResolved &&
+    //         intent.getEntity('district').value.trim(); // .toLowerCase()
+    //       // get the state where is district is in from the list available on the dashboard.
+
+    //       const theState =
+    //         districtQuery &&
+    //         theDistricts.reduce((acc, item) => {
+    //           if (
+    //             item.name.trim().toLowerCase() === districtQuery.toLowerCase()
+    //           ) {
+    //             return item.state;
+    //           }
+    //           return acc;
+    //         }, '');
+    //       if (theState) {
+    //         handleFilters('detectedstate', theState);
+    //         handleFilters('detecteddistrict', districtQuery);
+    //       }
+    //       return true;
+    //     case 'reply_with_states':
+    //       const stateQuery =
+    //         intent.getEntity('state').isResolved &&
+    //         intent.getEntity('state').value.trim(); // .toLowerCase();
+    //       if (stateQuery) handleFilters('detectedstate', stateQuery);
+    //       return true;
+    //     default:
+    //       return false;
+    //   }
+    // });
+
     Slang.setIntentActionHandler((intent) => {
-      switch (intent.name) {
-        case 'reply_with_districts':
+      console.log(intent);
+      if (intent.name === 'get_status') {
+        if (intent.getEntity('state').isResolved) {
+          const stateQuery =
+            intent.getEntity('state').isResolved &&
+            intent.getEntity('state').value.trim(); // .toLowerCase();
+          if (stateQuery) handleFilters('detectedstate', stateQuery);
+          return true;
+        }
+        if (intent.getEntity('district').isResolved) {
           // read the district spoken by the user.
           const districtQuery =
             intent.getEntity('district').isResolved &&
@@ -519,14 +529,13 @@ export function SlangPatients(props) {
             handleFilters('detecteddistrict', districtQuery);
           }
           return true;
-        case 'reply_with_states':
-          const stateQuery =
-            intent.getEntity('state').isResolved &&
-            intent.getEntity('state').value.trim(); // .toLowerCase();
-          if (stateQuery) handleFilters('detectedstate', stateQuery);
-          return true;
-        default:
-          return false;
+        }
+        const prompt = replyValues({
+          caseFor: 'noDataState',
+        });
+
+        Slang.startConversation(prompt, true);
+        return false;
       }
     });
   } catch (error) {

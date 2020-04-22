@@ -72,15 +72,9 @@ function App() {
                 style={{animationDelay: '0.2s'}}
               >
                 <div className="snippet">
-                  Thanks to the amazing folks @{' '}
-                  <a
-                    href="https://www.covid19india.org/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    covid19india.org
-                  </a>{' '}
-                  for the original code and data
+                  {
+                    'Help the battle against CoVid19 by sharing this dashboard with your friends and family to curb fake news.'
+                  }
                   <br />
                   <ShareButtons />
                 </div>
@@ -110,7 +104,20 @@ function App() {
           alt="https://www.covid19india.org | Coronavirus cases live dashboard"
         /> 
         <Banner /> */}
-        <ShareButtons />
+        <div className="MiniBanner fadeInUp" style={{animationDelay: '0.2s'}}>
+          <div className="snippet">
+            Thanks to the amazing folks @{' '}
+            <a
+              href="https://www.covid19india.org/"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              covid19india.org
+            </a>{' '}
+            for the original code and data
+            <br />
+          </div>
+        </div>
         <h5>We stand with everyone fighting on the frontlines</h5>
         <div className="link">
           <a
@@ -158,6 +165,19 @@ function App() {
           <Icon.MessageCircle />
           <span>Join Telegram to Collaborate!</span>
         </a>
+        <br />
+        <ShareButtons />
+        <br />
+        <h5>
+          {'Voice Enabled by '}
+          <a
+            href="https://slanglabs.in/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Slang Labs
+          </a>
+        </h5>
       </footer>
     </div>
   );

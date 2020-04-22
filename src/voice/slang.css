@@ -21,6 +21,13 @@
 
 }
 
+#slang-surface select {
+  background-color: white;
+  color: black;
+  font-family: 'Archia';
+  font-weight: 400;
+}
+
 @media only screen and (max-width: 600px) {
 
   #slang-button {
