@@ -10,11 +10,15 @@ ReactGA.initialize('UA-123830474-3');
 let theDistricts = [];
 
 // enable or disable logging
-const debudOn = false;
+const debudOn = localStorage.getItem('slangWeDebug');
 const debugLog = () => {
   if (!debudOn) {
     console.log = function () {};
   }
+};
+
+const isNumeric = (num) => {
+  return !isNaN(num);
 };
 
 function SlangInterface(props) {
@@ -150,7 +154,7 @@ function SlangInterface(props) {
       dataTypeQuery === 'tested' &&
       stateQuery &&
       theStateData &&
-      numberTestedState
+      isNumeric(numberTestedState)
     ) {
       props.onHighlightState(theStateData, index);
       window.location.hash = '#MapStats';
@@ -217,7 +221,7 @@ function SlangInterface(props) {
           return acc;
         }, '');
       console.log(theNumberDistrictConfirmed);
-      if (theNumberDistrictConfirmed === 0 || theNumberDistrictConfirmed) {
+      if (isNumeric(theNumberDistrictConfirmed)) {
         window.location.hash = '#MapStats';
         index = states.findIndex((x) => x.state === index);
         props.onHighlightDistrict(district, state, index);
@@ -268,9 +272,19 @@ function SlangInterface(props) {
             return numberFromDistrict(item, 'confirmed', newQuery);
           }
           return acc;
-        }, '');
+        }, null);
+      let updatedState;
+
+      if (newQuery) {
+        console.log(index);
+        const theStateData = states.find((item, i) => {
+          return item.state.trim().toLowerCase() === index.trim().toLowerCase();
+        });
+        const stateInfo = numberFromState(theStateData, 'confirmed', newQuery);
+        updatedState = stateInfo.lastupdatedtime;
+      }
       console.log(theNumberDistrictConfirmed);
-      if (theNumberDistrictConfirmed === 0 || theNumberDistrictConfirmed) {
+      if (isNumeric(theNumberDistrictConfirmed)) {
         window.location.hash = '#MapStats';
         index = states.findIndex((x) => x.state === index);
         props.onHighlightDistrict(district, state, index);
@@ -279,6 +293,7 @@ function SlangInterface(props) {
           districtQuery,
           newQuery,
           number: theNumberDistrictConfirmed,
+          lastUpdate: updatedState,
         });
 
         Slang.startConversation(prompt, true);
@@ -372,7 +387,11 @@ function SlangInterface(props) {
       console.log(theNumber);
       console.log('theNumber[state] = ' + numberForIndia);
 
-      if (dataTypeQuery === 'tested' && stateQuery && numberIndiaTested) {
+      if (
+        dataTypeQuery === 'tested' &&
+        stateQuery &&
+        isNumeric(numberIndiaTested)
+      ) {
         window.location.hash = '#MapStats';
         const prompt = replyValues({
           caseFor: 'replyWithStates',
@@ -382,7 +401,12 @@ function SlangInterface(props) {
           number: numberIndiaTested,
         });
         Slang.startConversation(prompt, true);
-      } else if (dataTypeQuery && stateQuery && theNumber && numberForIndia) {
+      } else if (
+        dataTypeQuery &&
+        stateQuery &&
+        theNumber &&
+        isNumeric(numberForIndia)
+      ) {
         props.onHighlightState(theNumber, index);
         window.location.hash = '#MapStats';
         const prompt = replyValues({
@@ -437,6 +461,9 @@ function SlangInterface(props) {
         }
         if (isNewDelhi()) {
           replyWithNewDelhi(intent);
+          return true;
+        } else if (intent.getEntity('data_type').isResolved) {
+          replyWithCountry(intent);
           return true;
         }
         const prompt = replyValues({
