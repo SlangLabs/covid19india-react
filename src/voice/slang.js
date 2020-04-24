@@ -217,7 +217,7 @@ function SlangInterface(props) {
           return acc;
         }, '');
       console.log(theNumberDistrictConfirmed);
-      if (theNumberDistrictConfirmed) {
+      if (theNumberDistrictConfirmed === 0 || theNumberDistrictConfirmed) {
         window.location.hash = '#MapStats';
         index = states.findIndex((x) => x.state === index);
         props.onHighlightDistrict(district, state, index);
@@ -270,7 +270,7 @@ function SlangInterface(props) {
           return acc;
         }, '');
       console.log(theNumberDistrictConfirmed);
-      if (theNumberDistrictConfirmed) {
+      if (theNumberDistrictConfirmed === 0 || theNumberDistrictConfirmed) {
         window.location.hash = '#MapStats';
         index = states.findIndex((x) => x.state === index);
         props.onHighlightDistrict(district, state, index);

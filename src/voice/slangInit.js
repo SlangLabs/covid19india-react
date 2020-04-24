@@ -185,6 +185,18 @@ export const replyValues = ({
         }
       }
 
+      if (stateQuery.trim().toLowerCase() === 'india') {
+        return (
+          (newQuery ? 'New ' : '') +
+          dataTypeQuery +
+          ' cases in ' +
+          stateQuery +
+          ' are ' +
+          number +
+          (newQuery && updatedSince ? ` , updated ${updatedSince}` : '')
+        );
+      }
+
       return (
         (newQuery ? 'New ' : '') +
         dataTypeQuery +
