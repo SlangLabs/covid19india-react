@@ -80,11 +80,18 @@ export const replyValues = ({
     number,
     lastUpdate
   );
+  if (dataTypeQuery === 'deaths') {
+    dataTypeQuery = 'death';
+  }
   let updatedSince = null;
+  let hindiLastUpdated = null;
   if (lastUpdate) {
     const dateFormat =
       lastUpdate.length > 10 ? 'DD/MM/YYYY hh:mm:ss' : 'DD/MM/YYYY';
     updatedSince = moment(lastUpdate, dateFormat).fromNow().toString();
+    hindiLastUpdated = moment(lastUpdate, dateFormat).format(
+      'MMMM Do YYYY, h:mm a'
+    ); // April 23rd 2020, 2:20:32 pm
   }
 
   switch (caseFor) {
@@ -105,10 +112,13 @@ export const replyValues = ({
         return (
           districtQuery +
           ' में ' +
-          (newQuery ? 'नया ' : '') +
+          (newQuery ? 'नए ' : '') +
           ' पुष्ट मामलो की संख्या ' +
           number +
-          ' है '
+          ' है। ' +
+          (newQuery && hindiLastUpdated
+            ? ` आख़री अप्डेट का समय ${hindiLastUpdated}`
+            : '')
         );
       }
       return (
@@ -125,47 +135,60 @@ export const replyValues = ({
           case 'active':
             return (
               stateQuery +
-              ' मैं ' +
-              (newQuery ? 'नया ' : '') +
+              ' में ' +
+              (newQuery ? 'नए ' : '') +
               ' ऐक्टिव कसेस की संख्या ' +
               number +
-              ' है '
+              ' है! ' +
+              (newQuery && hindiLastUpdated
+                ? `आख़री अप्डेट का समय ${hindiLastUpdated}`
+                : '')
             );
           case 'confirmed':
             return (
               stateQuery +
               ' में ' +
-              (newQuery ? 'नया ' : '') +
+              (newQuery ? 'नए ' : '') +
               ' पुष्ट मामलो की संख्या ' +
               number +
-              ' है '
+              ' है! ' +
+              (newQuery && hindiLastUpdated
+                ? ` आख़री अप्डेट का समय ${hindiLastUpdated}`
+                : '')
             );
           case 'recovered':
             return (
               stateQuery +
               ' में ' +
-              (newQuery ? 'नय ा' : '') +
+              (newQuery ? 'नए ' : '') +
               ' स्वस्थ होनेवाले मामलों की संख्या ' +
               number +
-              ' है '
+              ' है! ' +
+              (newQuery && hindiLastUpdated
+                ? ` आख़री अप्डेट का समय ${hindiLastUpdated}`
+                : '')
             );
-          case 'deceased':
+          case 'death':
             return (
               stateQuery +
               ' में ' +
               number +
               (newQuery ? ' नए' : '') +
-              ' लोगो की मौत हो चुकी हैं '
+              ' लोगो की मौत हो चुकी हैं! ' +
+              (newQuery && hindiLastUpdated
+                ? ` आख़री अप्डेट का समय ${hindiLastUpdated}`
+                : '')
             );
           default:
             console.log('data type not found');
             break;
         }
       }
+
       return (
         (newQuery ? 'New ' : '') +
         dataTypeQuery +
-        ' cases in ' +
+        ' cases in the state of ' +
         stateQuery +
         ' are ' +
         number +
