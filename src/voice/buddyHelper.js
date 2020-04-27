@@ -1398,6 +1398,12 @@ const commonHints = [
   'Yanam',
   'Yavatmal',
   'Zunheboto',
+  'Corona',
+  'Corona Virus',
+  'CoVid19',
+  'Virus',
+  'Coronavirus',
+  'SARS-CoV-2',
 ];
 
 export const hints = {
