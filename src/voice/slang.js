@@ -18,13 +18,14 @@ const debugLog = () => {
 };
 
 const isNumeric = (num) => {
+  if (num === null) return false;
+
   return !isNaN(num);
 };
+debugLog();
 
 function SlangInterface(props) {
-  const {states, stateDistrictWiseData, stateTestData} = props;
-  debugLog();
-
+  const {states, stateDistrictWiseData, stateTestData, districtZones} = props;
   theDistricts = Object.keys(stateDistrictWiseData).reduce((acc, state) => {
     const dist = Object.keys(stateDistrictWiseData[state]['districtData'])
       .filter((i) => i.toLowerCase() !== 'unknown')
@@ -101,6 +102,30 @@ function SlangInterface(props) {
     }
   };
 
+  // district: "Nicobars"
+  // districtcode: "AN_Nicobars"
+  // lastupdated: "01/05/2020"
+  // source: "https://www.facebook.com/airnewsalerts/photos/a.262571017217636/1710062729135117/?type=3&theater"
+  // state: "Andaman and Nicobar Islands"
+  // statecode: "AN"
+  // zone: "Green"
+
+  const zoneFromDistrict = (districtQuery) => {
+    console.log('distict = ');
+    console.log(districtQuery);
+    if (districtQuery) {
+      const districtZone = districtZones.find((dist) => {
+        // console.log(dist.district)
+        return dist.district.trim().toLowerCase() === districtQuery;
+      });
+      if (districtZone) {
+        return districtZone.zone;
+      }
+      return;
+    }
+    return null;
+  };
+
   const numberTestedFromState = (stateName) => {
     const stateTested = stateTestData.find(
       (obj) =>
@@ -167,7 +192,7 @@ function SlangInterface(props) {
       });
       Slang.startConversation(prompt, true);
     } else if (dataTypeQuery && stateQuery && theStateData) {
-      props.onHighlightState(theStateData, index);
+      if (theStateData && index) props.onHighlightState(theStateData, index);
       window.location.hash = '#MapStats';
       const prompt = replyValues({
         caseFor: 'replyWithStates',
@@ -261,7 +286,8 @@ function SlangInterface(props) {
 
       Slang.startConversation(prompt, true);
     } else {
-      console.log('confirmed district');
+      console.log('confirmed district', districtQuery);
+
       const theNumberDistrictConfirmed =
         districtQuery &&
         theDistricts.reduce((acc, item) => {
@@ -273,6 +299,8 @@ function SlangInterface(props) {
           }
           return acc;
         }, null);
+      const distictZoneColor = zoneFromDistrict(districtQuery);
+      console.log(distictZoneColor);
       let updatedState;
 
       if (newQuery) {
@@ -287,13 +315,17 @@ function SlangInterface(props) {
       if (isNumeric(theNumberDistrictConfirmed)) {
         window.location.hash = '#MapStats';
         index = states.findIndex((x) => x.state === index);
-        props.onHighlightDistrict(district, state, index);
+
+        if (district && state && index)
+          props.onHighlightDistrict(district, state, index);
+
         const prompt = replyValues({
           caseFor: 'replyWithDistricts',
           districtQuery,
           newQuery,
           number: theNumberDistrictConfirmed,
           lastUpdate: updatedState,
+          distictZoneColor,
         });
 
         Slang.startConversation(prompt, true);

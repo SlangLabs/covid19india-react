@@ -71,6 +71,7 @@ export const replyValues = ({
   newQuery,
   number,
   lastUpdate,
+  distictZoneColor,
 }) => {
   console.info(
     caseFor,
@@ -78,7 +79,8 @@ export const replyValues = ({
     districtQuery,
     stateQuery,
     number,
-    lastUpdate
+    lastUpdate,
+    distictZoneColor
   );
   if (dataTypeQuery === 'deaths') {
     dataTypeQuery = 'death';
@@ -127,7 +129,8 @@ export const replyValues = ({
         districtQuery +
         ' are ' +
         number +
-        (newQuery && updatedSince ? ` , updated ${updatedSince}` : '')
+        (newQuery && updatedSince ? ` , updated ${updatedSince} ` : '') +
+        (distictZoneColor ? `. It is a ${distictZoneColor} zone. ` : '')
       );
     case 'replyWithStates':
       if (selectedLocale === 'hi-IN') {

@@ -23,6 +23,7 @@ function Home(props) {
   const [states, setStates] = useState([]);
   const [stateDistrictWiseData, setStateDistrictWiseData] = useState({});
   const [stateTestData, setStateTestData] = useState({});
+  const [districtZones, setDistrictZones] = useState([]);
   // const [patients, setPatients] = useState([]);
   const [fetched, setFetched] = useState(false);
   const [graphOption, setGraphOption] = useState(2);
@@ -48,12 +49,14 @@ function Home(props) {
         {data: statesDailyResponse},
         updateLogResponse,
         stateTestResponse,
+        {data: districtZones},
       ] = await Promise.all([
         axios.get('https://api.covid19india.org/data.json'),
         axios.get('https://api.covid19india.org/state_district_wise.json'),
         axios.get('https://api.covid19india.org/states_daily.json'),
         axios.get('https://api.covid19india.org/updatelog/log.json'),
         axios.get('https://api.covid19india.org/state_test_data.json'),
+        axios.get('https://api.covid19india.org/zones.json'),
       ]);
       setStates(response.data.statewise);
       const ts = parseStateTimeseries(statesDailyResponse);
@@ -63,6 +66,7 @@ function Home(props) {
       setStateTestData(stateTestResponse.data.states_tested_data.reverse());
       setStateDistrictWiseData(stateDistrictWiseResponse.data);
       setActivityLog(updateLogResponse.data);
+      setDistrictZones(districtZones.zones);
       setFetched(true);
     } catch (err) {
       console.log(err);
@@ -222,6 +226,7 @@ function Home(props) {
                 onHighlightState={onHighlightState}
                 stateDistrictWiseData={stateDistrictWiseData}
                 stateTestData={stateTestData}
+                districtZones={districtZones}
                 onHighlightDistrict={onHighlightDistrict}
               />
             </React.Fragment>
