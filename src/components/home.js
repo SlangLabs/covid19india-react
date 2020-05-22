@@ -1,7 +1,6 @@
 import React, {useState, useEffect, useRef, useCallback} from 'react';
 import axios from 'axios';
 import {formatDistance, format} from 'date-fns';
-import * as Icon from 'react-feather';
 
 import {
   formatDate,
@@ -9,7 +8,6 @@ import {
   preprocessTimeseries,
   parseStateTimeseries,
 } from '../utils/common-functions';
-import {Link} from 'react-router-dom';
 
 import Table from './table';
 import Level from './level';
@@ -17,13 +15,13 @@ import MapExplorer from './mapexplorer';
 import TimeSeries from './timeseries';
 import Minigraph from './minigraph';
 // import Patients from './patients';
-import SlangInterface from '../voice/slang';
+import SlangInterface from 'covid19-india-voice-assistant';
 
 function Home(props) {
   const [states, setStates] = useState([]);
   const [stateDistrictWiseData, setStateDistrictWiseData] = useState({});
   const [stateTestData, setStateTestData] = useState({});
-  const [districtZones, setDistrictZones] = useState([]);
+  // const [districtZones, setDistrictZones] = useState([]);
   // const [patients, setPatients] = useState([]);
   const [fetched, setFetched] = useState(false);
   const [graphOption, setGraphOption] = useState(2);
@@ -49,14 +47,14 @@ function Home(props) {
         {data: statesDailyResponse},
         updateLogResponse,
         stateTestResponse,
-        {data: districtZones},
+        // {data: districtZones},
       ] = await Promise.all([
         axios.get('https://api.covid19india.org/data.json'),
         axios.get('https://api.covid19india.org/state_district_wise.json'),
         axios.get('https://api.covid19india.org/states_daily.json'),
         axios.get('https://api.covid19india.org/updatelog/log.json'),
         axios.get('https://api.covid19india.org/state_test_data.json'),
-        axios.get('https://api.covid19india.org/zones.json'),
+        // axios.get('https://api.covid19india.org/zones.json'),
       ]);
       setStates(response.data.statewise);
       const ts = parseStateTimeseries(statesDailyResponse);
@@ -66,7 +64,7 @@ function Home(props) {
       setStateTestData(stateTestResponse.data.states_tested_data.reverse());
       setStateDistrictWiseData(stateDistrictWiseResponse.data);
       setActivityLog(updateLogResponse.data);
-      setDistrictZones(districtZones.zones);
+      // setDistrictZones(districtZones.zones);
       setFetched(true);
     } catch (err) {
       console.log(err);
@@ -93,6 +91,13 @@ function Home(props) {
   //     behavior: 'smooth',
   //   })
   // );
+  const onFound = (object) => {
+    console.log(object);
+    window.location.hash = '#MapStats';
+    setTimeout(() => {
+      window.location.hash = '#_';
+    }, 10);
+  };
 
   return (
     <React.Fragment>
@@ -222,12 +227,15 @@ function Home(props) {
                 logMode={timeseriesLogMode}
               />
               <SlangInterface
-                states={states}
+                // states={states}
                 onHighlightState={onHighlightState}
-                stateDistrictWiseData={stateDistrictWiseData}
-                stateTestData={stateTestData}
-                districtZones={districtZones}
+                // stateDistrictWiseData={stateDistrictWiseData}
+                // stateTestData={stateTestData}
+                // districtZones={districtZones}
                 onHighlightDistrict={onHighlightDistrict}
+                onStateFound={onFound}
+                onDistrictFound={onFound}
+                onCountryFound={onFound}
               />
             </React.Fragment>
           )}
@@ -376,12 +384,12 @@ function Home(props) {
                   </div>
                 );
               })}
-            <button className="button">
+            {/* <button className="button">
               <Link to="/demographics">
                 <Icon.Database />
                 <span>Demographic Overview</span>
               </Link>
-            </button>
+            </button> */}
           </div>
         </div>
 

@@ -3451,6 +3451,14 @@ cosmiconfig@^6.0.0:
     path-type "^4.0.0"
     yaml "^1.7.2"
 
+covid19-india-voice-assistant@0.1.3:
+  version "0.1.3"
+  resolved "https://registry.yarnpkg.com/covid19-india-voice-assistant/-/covid19-india-voice-assistant-0.1.3.tgz#d1e112b6ead2d363f9934b70b805ecf002e6b10e"
+  integrity sha512-ofRSZWO3A2uCLSHrl3fh3oOHcNdUIJrKYin0CatP8KGlWjOJ/0VNlNoCKrLqCyFXb7jdhyUn+s1EnlWGA5xTag==
+  dependencies:
+    axios "^0.19.2"
+    slang-web-sdk "1.0.0"
+
 create-ecdh@^4.0.0:
   version "4.0.3"
   resolved "https://registry.yarnpkg.com/create-ecdh/-/create-ecdh-4.0.3.tgz#c9111b6f33045c4697f144787f9254cdc77c45ff"
@@ -11283,8 +11291,10 @@ sisteransi@^1.0.4:
   resolved "https://registry.yarnpkg.com/sisteransi/-/sisteransi-1.0.5.tgz#134d681297756437cc05ca01370d3a7a571075ed"
   integrity sha512-bLGGlR1QxBcynn2d5YmDX4MGjlZvy2MRBDRNHLJ8VI6l6+9FUiyTFNJ0IveOSP0bcXgVDPRcfGqA0pjaqUpfVg==
 
-"slang-web-sdk-local@file:./private/slang-web-sdk-local":
-  version "1.0.2"
+slang-web-sdk@1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/slang-web-sdk/-/slang-web-sdk-1.0.0.tgz#8ee948e11f76a12861fbe113f640dd467f011fcc"
+  integrity sha512-u9V0K3EGmrYLlOB8E4MC4QXMAyD6L/F+uyN/FmcNaHRdDf/fyVIzRztFL6vhF/F/KiPeB7b39voJ9Jw95D2/hA==
 
 slash@^1.0.0:
   version "1.0.0"

@@ -5,7 +5,6 @@ import {format, parse, subDays} from 'date-fns';
 
 import Patients from './patients';
 import DownloadBlock from './downloadblock';
-import {SlangPatients} from '../voice/slang';
 
 function filterByObject(obj, filters) {
   const keys = Object.keys(filters);
@@ -382,7 +381,6 @@ function PatientDB(props) {
         />
       </div>
       <DownloadBlock patients={patients} />
-      <SlangPatients handleFilters={handleFilters} />
     </div>
   );
 }
