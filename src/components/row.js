@@ -89,10 +89,17 @@ function Row(props) {
     <React.Fragment>
       <tr
         className={props.total ? 'state is-total' : 'state'}
-        onMouseEnter={() => props.onHighlightState?.(state, props.index)}
-        onMouseLeave={() => props.onHighlightState?.()}
+        // onMouseEnter={() => props.onHighlightState?.(state, props.index)}
+        // onMouseLeave={() => props.onHighlightState?.()}
         /* onTouchStart={() => props.onHighlightState?.(state, props.index)}*/
-        onClick={!props.total ? handleReveal : null}
+        onClick={() => {
+          if (!props.total) {
+            handleReveal();
+            props.onHighlightState(state, props.index);
+          } else {
+            return null;
+          }
+        }}
         style={{background: props.index % 2 === 0 ? '#f8f9fa' : ''}}
       >
         <td style={{fontWeight: 600}}>

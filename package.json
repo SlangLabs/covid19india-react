@@ -11,7 +11,7 @@
     "@testing-library/react": "^10.0.1",
     "axios": "^0.19.2",
     "chart.js": "^2.9.3",
-    "covid19-india-voice-assistant": "0.1.3",
+    "covid19-india-voice-assistant": "0.1.5",
     "d3": "^5.15.0",
     "d3-svg-legend": "^2.25.6",
     "date-fns": "^2.11.0",

@@ -26,7 +26,7 @@ function TimeSeries(props) {
   const dimensions = useResizeObserver(wrapperRef);
 
   useEffect(() => {
-    if (props.timeseries.length > 1) {
+    if (props.timeseries && props.timeseries.length > 1) {
       const slicedTimeseries = sliceTimeseriesFromEnd(
         props.timeseries,
         lastDaysCount

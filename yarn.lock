@@ -3451,10 +3451,10 @@ cosmiconfig@^6.0.0:
     path-type "^4.0.0"
     yaml "^1.7.2"
 
-covid19-india-voice-assistant@0.1.3:
-  version "0.1.3"
-  resolved "https://registry.yarnpkg.com/covid19-india-voice-assistant/-/covid19-india-voice-assistant-0.1.3.tgz#d1e112b6ead2d363f9934b70b805ecf002e6b10e"
-  integrity sha512-ofRSZWO3A2uCLSHrl3fh3oOHcNdUIJrKYin0CatP8KGlWjOJ/0VNlNoCKrLqCyFXb7jdhyUn+s1EnlWGA5xTag==
+covid19-india-voice-assistant@0.1.5:
+  version "0.1.5"
+  resolved "https://registry.yarnpkg.com/covid19-india-voice-assistant/-/covid19-india-voice-assistant-0.1.5.tgz#4693dd8b74b5d2118a0a34eadfcf9f54cac49104"
+  integrity sha512-efRGV1DZY1OMSpEoU7V27yGnNB9yfi9c23d0u+ZAIgKQ6Jv32s2LXS06AUXSBKLGSlOVbnY5kmehsbEiwl1JIA==
   dependencies:
     axios "^0.19.2"
     slang-web-sdk "1.0.0"

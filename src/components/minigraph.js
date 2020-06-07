@@ -149,7 +149,7 @@ function Minigraph({timeseries}) {
             .curve(d3.curveCardinal)
         );
 
-      const totalLength3 = path1.node().getTotalLength();
+      const totalLength3 = path3.node().getTotalLength();
       path3
         .attr('stroke-dasharray', totalLength3 + ' ' + totalLength3)
         .attr('stroke-dashoffset', totalLength3)
